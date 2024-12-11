@@ -13,12 +13,29 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../../firebase"; // Adjust path as needed
+import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { authStore } from "@/app/stores/userStore";
+import { observer } from "mobx-react-lite";
+
 // import {  } from "firebase/database";
 const formSchema = z.object({
   password: z.string().min(2).max(50),
   email: z.string().min(2).max(50),
 }); // Should log the Firebase Auth instance
-function LoginForm() {
+const LoginForm = observer(() => {
+  const router = useRouter();
+  const { user, isLoading } = authStore;
+  const pathname = usePathname()
+
+ useEffect(() => {
+  if (!isLoading && !user && pathname !== "/login") {
+    void router.push("/login");
+  } else if (user) {
+    void router.push("/dashboard");
+  }
+}, [user, isLoading, router]);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {},
@@ -34,7 +51,13 @@ function LoginForm() {
         console.log("User signed in:", user);
       })
       .catch((error) => {
-        console.error("Error during sign-up:", error.message);
+        if (error.code === "auth/wrong-password") {
+          console.error("Incorrect password");
+        } else if (error.code === "auth/user-not-found") {
+          console.error("User does not exist");
+        } else {
+          console.error("Error during sign-in:", error.message);
+        }
       });
 
     console.log("Form submitted with values:", values);
@@ -55,6 +78,7 @@ function LoginForm() {
                     {...field}
                     type="email"
                     style={{ width: "100%" }}
+                    value={field.value}
                   />
                 </FormControl>
                 <FormMessage />
@@ -72,17 +96,18 @@ function LoginForm() {
                     {...field}
                     type="password"
                     style={{ width: "100%" }}
+                    value={field.value}
                   />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+          <Button type="submit">Sign In</Button>
         </form>
       </Form>
     </div>
   );
-}
+});
 
 export default LoginForm;

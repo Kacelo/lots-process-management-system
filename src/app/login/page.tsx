@@ -3,7 +3,7 @@ import React from "react";
 
 function page() {
   return (
-    <div>
+    <div style={{padding: "10em"}}>
       <LoginForm />
     </div>
   );
