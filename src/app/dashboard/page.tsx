@@ -2,6 +2,8 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { authStore } from "@/app/stores/userStore";
+import BasicDetailForm from "@/components/ui/process/form/basic-detail-form";
+import StepSCreation from "@/components/ui/process/form/steps-form";
 function page() {
   const { user, isLoading } = authStore;
   const router = useRouter();
@@ -11,12 +13,13 @@ function page() {
     }
   }, [user, isLoading]);
   console.log("isLoading:", isLoading, "user:", user);
-  if (isLoading) {
-    return <div>Loading...</div>; // Show loading indicator while checking auth state
-  } else
+  return (
     <div>
       <h1>Protected Content for Authenticated Users</h1>
-    </div>;
+      <BasicDetailForm />
+      <StepSCreation />
+    </div>
+  );
 }
 
 export default page;
