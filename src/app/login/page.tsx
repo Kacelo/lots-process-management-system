@@ -1,7 +1,6 @@
-// import LoginForm from "@/components/ui/sign-in-form/login-form";
+import React from "react";
 import { NavBar } from "@/components/ui/navbar/navbar";
 import { LoginForm } from "@/components/ui/sign-in-form/login-form";
-import React from "react";
 
 function page() {
   return (

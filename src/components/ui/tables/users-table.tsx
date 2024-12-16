@@ -35,44 +35,45 @@ export const UsersTable = observer(() => {
       const querySnapshot = await getDocs(usersCollection);
 
       // Map Firestore documents to an array of user data
-      const usersList = querySnapshot.docs.map((doc) => ({
+      const usersList:usersProps[] = querySnapshot.docs.map((doc) => ({
         id: doc.id, // Document ID as a unique key
-        ...doc.data(), // Spread other user fields
+        ...(doc.data() as Omit<usersProps, "id">), // Assert the Firestore data type
       }));
-      console.log("users", usersList);
       setUsers(usersList);
     } catch (error) {
       console.error("Error fetching users:", error);
     }
   };
   return (
-    <Table>
-      <TableCaption>A list of registered users.</TableCaption>
-      <TableHeader>
-        <TableRow>
-          {/* <TableHead className="w-[100px]">Name</TableHead> */}
-          <TableHead className="w-[350px]">Email</TableHead>
-          <TableHead className="w-[350px]">Role</TableHead>
-          <TableHead>Status</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {users?.map((user) => (
-          <TableRow key={user.uid}>
-            {/* <TableCell className="font-medium">{user.name || "N/A"}</TableCell> */}
-            <TableCell>{user.email || "N/A"}</TableCell>
-            <TableCell>{user.role || "User"}</TableCell>
-            {/* <TableCell>{user.status || "Active"}</TableCell> */}
+    <div>
+      <Table>
+        <TableCaption>A list of registered users.</TableCaption>
+        <TableHeader>
+          <TableRow>
+            {/* <TableHead className="w-[100px]">Name</TableHead> */}
+            <TableHead className="w-[350px]">Email</TableHead>
+            <TableHead className="w-[350px]">Role</TableHead>
+            <TableHead>Status</TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-      <TableFooter>
-        <TableRow>
-          <TableCell colSpan={4} className="text-right">
-            Total Users: {users?.length}
-          </TableCell>
-        </TableRow>
-      </TableFooter>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {users?.map((user) => (
+            <TableRow key={user.uid}>
+              {/* <TableCell className="font-medium">{user.name || "N/A"}</TableCell> */}
+              <TableCell>{user.email || "N/A"}</TableCell>
+              <TableCell>{user.role || "User"}</TableCell>
+              {/* <TableCell>{user.status || "Active"}</TableCell> */}
+            </TableRow>
+          ))}
+        </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TableCell colSpan={4} className="text-right">
+              Total Users: {users?.length}
+            </TableCell>
+          </TableRow>
+        </TableFooter>
+      </Table>
+    </div>
   );
 });

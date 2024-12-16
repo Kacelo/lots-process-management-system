@@ -16,7 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { setDoc, doc, addDoc, collection, getDocs } from "firebase/firestore";
+import { addDoc, collection, getDocs } from "firebase/firestore";
 import { firestore } from "../../../../../firebase"; // Adjust path as needed
 import { useRootStore } from "@/app/stores/RootStateContext";
 import {
@@ -45,14 +45,13 @@ interface ProcessInterface {
 
 interface BasicDetailProps {
   userId: string;
-  updateView: (view: string) => void;
-  setFocusedProcessId: React.Dispatch<React.SetStateAction<string>>;
 }
 interface usersProps {
   name?: string;
   email: string;
   uid: string;
   role?: string;
+  id: string;
 }
 const BasicDetailForm = ({
   userId,
@@ -62,17 +61,18 @@ const BasicDetailForm = ({
   //   const { authStore } = useRootStore();
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [users]);
   const fetchUsers = async () => {
     try {
       const usersCollection = collection(firestore, "users"); // Path to the "users" collection
       const querySnapshot = await getDocs(usersCollection);
 
       // Map Firestore documents to an array of user data
-      const usersList = querySnapshot.docs.map((doc) => ({
+      const usersList: usersProps[] = querySnapshot.docs.map((doc) => ({
         id: doc.id, // Document ID as a unique key
-        ...doc.data(), // Spread other user fields
+        ...(doc.data() as Omit<usersProps, "id">), // Assert the Firestore data type
       }));
+  
       console.log("users", usersList);
       setUsers(usersList);
     } catch (error) {
