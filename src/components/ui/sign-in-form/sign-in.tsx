@@ -13,10 +13,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../../firebase"; // Adjust path as needed
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { authStore } from "@/app/stores/userStore";
 import { observer } from "mobx-react-lite";
+import { useRootStore } from "@/app/stores/RootStateContext";
+import { redirect } from 'next/navigation'
 
 // import {  } from "firebase/database";
 const formSchema = z.object({
@@ -25,16 +26,17 @@ const formSchema = z.object({
 }); // Should log the Firebase Auth instance
 const LoginForm = observer(() => {
   const router = useRouter();
+  const { authStore } = useRootStore();
   const { user, isLoading } = authStore;
-  const pathname = usePathname()
+  const pathname = usePathname();
 
- useEffect(() => {
-  if (!isLoading && !user && pathname !== "/login") {
-    void router.push("/login");
-  } else if (user) {
-    void router.push("/dashboard");
-  }
-}, [user, isLoading, router]);
+  useEffect(() => {
+    if (!isLoading && !user && pathname !== "/login") {
+      void router.push("/login");
+    } else if (user) {
+      void router.push("/dashboard");
+    }
+  }, [user, isLoading, router, pathname]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -49,6 +51,7 @@ const LoginForm = observer(() => {
       .then((userCredential) => {
         const user = userCredential.user;
         console.log("User signed in:", user);
+        redirect('/dashboard')
       })
       .catch((error) => {
         if (error.code === "auth/wrong-password") {

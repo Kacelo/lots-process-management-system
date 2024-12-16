@@ -1,56 +1,39 @@
-import React from "react";
-import { makeAutoObservable } from "mobx";
-import { auth, firestore } from "../../../firebase";
-import { doc, getDoc } from "firebase/firestore";
-import {
-  signOut,
-  onAuthStateChanged,
-  User as FirebaseUser,
-} from "firebase/auth";
+import { action, makeAutoObservable } from "mobx";
+import { User as FirebaseUser } from "firebase/auth";
+import { initAuthListener, logOut } from "../api/authAPI";
 
 class AuthStore {
   user: FirebaseUser | null = null;
-  userData: Record<string, any> | null = null;
+  userData: Record<string, unknown> | null = null;
   isLoading = false;
 
   constructor() {
     makeAutoObservable(this);
     this.initAuthListener();
   }
-
-  // listen for firebase auth state changes
+  fetchUserData () {
+    fetchUserData((uid)=>{
+      
+    })
+  }
   initAuthListener() {
-    onAuthStateChanged(auth, async (firebaseUser) => {
-      this.isLoading = true;
-      if (firebaseUser) {
+    initAuthListener(
+      (firebaseUser, userData) => {
         this.user = firebaseUser;
-        this.userData = await this.fetchUserData(firebaseUser.uid);
-        this.isLoading = false;
-
-        console.log("user fetched:", this.userData);
-      } else {
-        this.user = null;
-        this.userData = null;
+        this.userData = userData;
+      },
+      (isLoading) => {
+        this.isLoading = isLoading;
       }
-
-      this.isLoading = false;
-      console.log("isLoading fetched:", this.isLoading);
-    });
+    );
   }
-
-  async fetchUserData(uid: string) {
-    const userDoc = doc(firestore, "users", uid);
-    const snapshot = await getDoc(userDoc);
-    return snapshot.exists() ? snapshot.data() : null;
-  }
-
-  //   log the user out
   async logOut() {
     try {
-      await signOut(auth);
+      await logOut();
     } catch (error) {
-      console.error("Error with logging out: ", error);
+      console.error("Error logging out:", error);
     }
   }
 }
-export const authStore = new AuthStore();
+
+export default AuthStore;

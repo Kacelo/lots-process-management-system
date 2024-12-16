@@ -3,8 +3,9 @@ import React from "react";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { NavBarr } from "@/components/ui/navbar/navbar";
-
+import { NavBar } from "@/components/ui/navbar/navbar";
+import { RootStateProvider } from "./stores/RootStateContext";
+// import { useObserver } from "mobx-react-lite";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -27,13 +28,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    <RootStateProvider>
+
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <NavBarr />
         {children}
       </body>
     </html>
+    </RootStateProvider>
+
   );
 }

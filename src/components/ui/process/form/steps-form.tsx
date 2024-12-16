@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import {
   Form,
   FormControl,
@@ -47,30 +47,59 @@ const formSchema = z.object({
   tags: z.string().array().min(1),
 });
 
-interface StepsInterface {
+// interface StepsInterface {
+//   name: string;
+//   description: string;
+//   assignee: string[];
+//   deadline: string;
+// }
+interface TaskInterface {
+  name: string; // Name of the task
+  description: string; // Detailed description of the task
+  assignees: string[]; // Array of user IDs assigned to the task
+  deadline: string; // Timestamp for the task deadline
+  status: string; // Status of the task
+  processId: string; // ID of the process the task is associated with
+  createdAt: string; // Timestamp when the task was created
+  updatedBy: string; // User ID of the person who last updated the task
+}
+interface ProcessInterface {
   name: string;
   description: string;
-  assignee: string[];
-  deadline: string;
+  createdBy: string;
+  createdAt: string;
+  metadata: {
+    status: "not-started" | "in-progress" | "completed";
+    priority: "low" | "medium" | "high";
+  };
+  tasks: string[];
 }
-
-function StepSCreation() {
-  const [steps, setSteps] = useState<StepsInterface[]>([]);
+interface StepsCreationProps {
+  focusedProcessId: string;
+}
+function StepSCreation({ focusedProcessId }: StepsCreationProps) {
+  const [steps, setSteps] = useState<TaskInterface[]>([]);
   const [assigneeEmails, setAssigneeEmails] = useState<string[]>([]);
   const [newEmail, setNewEmail] = useState("");
-
+  console.log('Id:', focusedProcessId);
   const [newStep, setNewStep] = useState({
     name: "",
     description: "",
-    assignee: [...assigneeEmails],
+    assignees: [...assigneeEmails],
     deadline: "",
+    status: "",
+    processId: "",
+    createdAt: "",
+    updatedBy: "",
   });
 
   useEffect(() => {
     return () => {};
   }, [newStep]);
   console.log(newEmail, assigneeEmails);
-  const handleInputChange = (e: any) => {
+  const handleInputChange = (
+    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     console.log(name, value);
     setNewStep((prevStep) => ({ ...prevStep, [name]: value }));
@@ -82,8 +111,12 @@ function StepSCreation() {
       setNewStep({
         name: "",
         description: "",
-        assignee: [],
+        assignees: [],
         deadline: "",
+        status: "",
+        processId: "",
+        createdAt: "",
+        updatedBy: "",
       });
     } else {
       alert("Please fill out the name and description fields.");
@@ -94,6 +127,7 @@ function StepSCreation() {
   };
   const handleSubmit = () => {
     // Logic to handle the submission of the steps form
+    // get focusedProccess and update its tasklist
     console.log("Steps Submitted: ", steps);
   };
   return (
@@ -106,7 +140,7 @@ function StepSCreation() {
         <div className="flex flex-col gap-4 p-4">
           <h2 className="text-lg font-semibold">Create Steps</h2>
           <div className="flex flex-col gap-4 p-4 border rounded-md bg-gray-50">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               <input
                 type="text"
                 name="name"
@@ -161,7 +195,7 @@ function StepSCreation() {
                     <strong>Description:</strong> {step.description}
                   </p>
                   <p>
-                    <strong>Assignee:</strong> {step.assignee[0]}
+                    <strong>Assignee:</strong> {step.assignees[0]}
                   </p>
                   <p>
                     <strong>Deadline:</strong> {step.deadline}
