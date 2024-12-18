@@ -7,26 +7,26 @@ class AuthStore {
   userData: Record<string, unknown> | null = null;
   isLoading = false;
 
-  // constructor() {
-  //   makeAutoObservable(this);
-  //   this.initAuthListener();
-  // }
-  // fetchUserData () {
-  //   fetchUserData((uid)=>{
+  constructor() {
+    makeAutoObservable(this);
+    this.initAuthListener();
+  }
+  fetchUserData () {
+    fetchUserData((uid)=>{
       
-  //   })
-  // }
-  // initAuthListener() {
-  //   initAuthListener(
-  //     (firebaseUser, userData) => {
-  //       this.user = firebaseUser;
-  //       this.userData = userData;
-  //     },
-  //     (isLoading) => {
-  //       this.isLoading = isLoading;
-  //     }
-  //   );
-  // }
+    })
+  }
+  initAuthListener() {
+    initAuthListener(
+      (firebaseUser, userData) => {
+        this.user = firebaseUser;
+        this.userData = userData;
+      },
+      (isLoading) => {
+        this.isLoading = isLoading;
+      }
+    );
+  }
   async logOut() {
     try {
       await logOut();

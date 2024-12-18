@@ -97,7 +97,7 @@ export function PieChartComponent({ chartData }: PieChartComponentProps) {
                           y={(viewBox.cy || 0) + 24}
                           className="fill-muted-foreground"
                         >
-                          Visitors
+                          Processes
                         </tspan>
                       </text>
                     )

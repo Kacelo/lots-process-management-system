@@ -47,9 +47,9 @@ export const ProcessTable = observer(() => {
       const querySnapshot = await getDocs(processCollection);
 
       // Map Firestore documents to an array of user data
-      const processList = querySnapshot.docs.map((doc) => ({
+      const processList:ProcessProps[] = querySnapshot.docs.map((doc) => ({
         id: doc.id, // Document ID as a unique key
-        ...doc.data(), // Spread other user fields
+        ...(doc.data() as Omit<ProcessProps, "id">), // Assert the Firestore data type
       }));
       console.log("processes", processList);
       setProcesses(processList);

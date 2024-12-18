@@ -11,3 +11,14 @@ export function SkeletonCard() {
     </div>
   )
 }
+export function SkeletonComp() {
+  return (
+    <div className="flex flex-col space-y-3">
+      <Skeleton className="h-[525px] w-full rounded-xl" />
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-[520px]" />
+        <Skeleton className="h-4 w-[520px]" />
+      </div>
+    </div>
+  )
+}

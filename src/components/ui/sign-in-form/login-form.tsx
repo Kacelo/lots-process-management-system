@@ -27,6 +27,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { observer } from "mobx-react-lite";
 import { useRootStore } from "@/app/stores/RootStateContext";
 import { redirect } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
   password: z.string().min(2).max(50),
@@ -36,6 +37,8 @@ export const LoginForm = observer(function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const { toast } = useToast();
+
   const router = useRouter();
   const { authStore } = useRootStore();
   const { user, isLoading } = authStore;
@@ -51,26 +54,38 @@ export const LoginForm = observer(function LoginForm({
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {},
+    defaultValues: {
+      password:"",
+      email:""
+    },
   });
-
+  const handleToast = (message:string, description:string) => {
+    toast({
+      title: message,
+      description: description,
+    });
+    // authStore.logOut()
+  };
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log("Auth:", auth); // Debugging auth object
     const { email, password } = values;
-
+   
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
-        console.log("User signed in:", user);
         router.push("/dashboard");
+        handleToast("Welcome back", "");
       })
       .catch((error) => {
         if (error.code === "auth/wrong-password") {
           console.error("Incorrect password");
+          handleToast("Incorrect password", `${error.message}`);
         } else if (error.code === "auth/user-not-found") {
           console.error("User does not exist");
+          handleToast("Error during sign-in", `${error.message}`);
         } else {
           console.error("Error during sign-in:", error.message);
+          handleToast("Error during sign-in", `${error.message}`);
         }
       });
 
@@ -88,7 +103,7 @@ export const LoginForm = observer(function LoginForm({
         </CardHeader>
         <CardContent>
           <div>
-            
+
           </div>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -145,7 +160,7 @@ export const LoginForm = observer(function LoginForm({
                     )}
                   />
                 </div>
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full" >
                   Login
                 </Button>
                 {/* <Button variant="outline" className="w-full">

@@ -51,7 +51,7 @@ const data = {
   user: {
     name: "shadcn",
     email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    avatar: "",
   },
   teams: [
     {
@@ -243,7 +243,7 @@ export const AppSidebar = observer(
       const userData = {
         name: user.email as string,
         email: user.email as string,
-        avatar: "/avatars/shadcn.jpg",
+        avatar: "",
       };
       return (
         <div>

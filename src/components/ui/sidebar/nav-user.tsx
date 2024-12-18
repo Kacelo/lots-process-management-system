@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   BadgeCheck,
@@ -7,13 +7,9 @@ import {
   CreditCard,
   LogOut,
   Sparkles,
-} from "lucide-react"
+} from "lucide-react";
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,27 +18,48 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
-import { Button } from "../button"
-import { useRootStore } from "@/app/stores/RootStateContext"
+} from "@/components/ui/sidebar";
+import { Button } from "../button";
+import { useRootStore } from "@/app/stores/RootStateContext";
+import { useToast } from "@/hooks/use-toast";
+import { redirect } from "next/navigation";
 
 export function NavUser({
   user,
 }: {
   user: {
-    name: string
-    email: string
-    avatar: string
-  }
+    name: string;
+    email: string;
+    avatar: string;
+  };
 }) {
-  const { isMobile } = useSidebar()
-    const { authStore } = useRootStore();
+  const { isMobile } = useSidebar();
+  const { authStore } = useRootStore();
+  const { toast } = useToast();
+  const handleLogout = async () => {
+    try {
+      await authStore.logOut(); // Call the logout function
+      toast({
+        title: "Logged Out",
+        description: "You have been successfully logged out.",
+      });
+      redirect("/dashboard");
+    } catch (error) {
+      console.error("Error logging out:", error);
+      toast({
+        title: "Logout Failed",
+        description:
+          "Something went wrong while logging out. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <SidebarMenu>
@@ -83,8 +100,7 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-            </DropdownMenuGroup>
+            <DropdownMenuGroup></DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
@@ -96,15 +112,14 @@ export function NavUser({
             <DropdownMenuItem>
               <LogOut />
               <div>
-              <Button variant="destructive" onClick={() => authStore.logOut()}>
-            Log Out
-          </Button>
-
+                <Button variant="destructive" onClick={handleLogout}>
+                  Log Out
+                </Button>
               </div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }

@@ -15,6 +15,7 @@ import { observer } from "mobx-react-lite";
 
 import { useEffect, useState } from "react";
 import { firestore } from "../../../../firebase";
+import { SkeletonComp } from "../skeleton/skeleton";
 
 interface usersProps {
   name?: string;
@@ -25,7 +26,9 @@ interface usersProps {
 export const UsersTable = observer(() => {
   const [users, setUsers] = useState<usersProps[]>([]);
 
-  //   const { authStore } = useRootStore();
+    const { authStore } = useRootStore();
+
+    const {isLoading} = authStore;
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -44,6 +47,13 @@ export const UsersTable = observer(() => {
       console.error("Error fetching users:", error);
     }
   };
+    if (isLoading) {
+      return (
+        <div>
+          <SkeletonComp />
+        </div>
+      );
+    }
   return (
     <div>
       <Table>

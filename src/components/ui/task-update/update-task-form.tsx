@@ -32,6 +32,7 @@ import {
 // import { firestore } from "@/firebase";
 import { useToast } from "@/hooks/use-toast";
 import { firestore } from "../../../../firebase";
+import { redirect } from "next/navigation";
 
 const FormSchema = z.object({
   status: z.string().nonempty({ message: "Please select a status." }),
@@ -94,6 +95,7 @@ export function StatusUpdateForm({ processId }: { processId: string }) {
         title: "Status updated!",
         description: `The status has been updated successfully to "${updates.status}".`,
       });
+      redirect("/all-processes");
     } catch (error) {
       console.error("Error updating document:", error);
       toast({
@@ -136,7 +138,7 @@ export function StatusUpdateForm({ processId }: { processId: string }) {
   }
 
   return (
-    <Card className="w-[650px]">
+    <Card className="">
       <CardHeader>
         <CardTitle>{process?.name}</CardTitle>
         <CardDescription>{process?.description}</CardDescription>

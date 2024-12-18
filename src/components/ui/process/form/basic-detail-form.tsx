@@ -61,7 +61,7 @@ const BasicDetailForm = ({
   //   const { authStore } = useRootStore();
   useEffect(() => {
     fetchUsers();
-  }, [users]);
+  }, []);
   const fetchUsers = async () => {
     try {
       const usersCollection = collection(firestore, "users"); // Path to the "users" collection
@@ -79,12 +79,12 @@ const BasicDetailForm = ({
       console.error("Error fetching users:", error);
     }
   };
-  console.log("User: ", users);
+  // console.log("User: ", users);
   const defaultProcessDetails: ProcessInterface = {
     name: "",
     description: "",
     createdBy: userId,
-    createdAt: new Date().toISOString(),
+    createdAt: "",
     status: "not-started",
     assignee: "",
   };

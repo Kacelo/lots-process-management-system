@@ -11,30 +11,53 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { PieChartComponent } from "@/components/ui/pie-chart/pie-chart";
+import { SkeletonComp } from "@/components/ui/skeleton/skeleton";
 const page = observer(() => {
   const { authStore, processStore } = useRootStore();
-  const { user } = authStore;
+  const { isLoading } = authStore;
   useEffect(() => {
     processStore.fetchProcesses();
   }, []);
-  console.log(processStore.processes.map((process) => process.name));
-  const {processes} = processStore;
-  const completedTasks = processes.filter(process => process.status === "completed");
-  const inProgressTasks = processes.filter(process => process.status === "in-progress");
-  const notStatedTasks = processes.filter(process => process.status === "not-started");
+  const { processes } = processStore;
+  const completedTasks = processes.filter(
+    (process) => process.status === "completed"
+  );
+  const inProgressTasks = processes.filter(
+    (process) => process.status === "in-progress"
+  );
+  const notStatedTasks = processes.filter(
+    (process) => process.status === "not-started"
+  );
 
   const chartData = [
-    { browser: "completed", visitors: completedTasks.length, fill: "var(--color-completed)" },
-    { browser: "inProgress", visitors: inProgressTasks.length, fill: "var(--color-inProgress)" },
-    { browser: "notStarted", visitors: notStatedTasks.length, fill: "var(--color-notStarted)" },
-  ]
-  console.log('complted',completedTasks)
-  if (!user) {
-    redirect(`/login`);
+    {
+      browser: "completed",
+      visitors: completedTasks.length,
+      fill: "var(--color-completed)",
+    },
+    {
+      browser: "inProgress",
+      visitors: inProgressTasks.length,
+      fill: "var(--color-inProgress)",
+    },
+    {
+      browser: "notStarted",
+      visitors: notStatedTasks.length,
+      fill: "var(--color-notStarted)",
+    },
+  ];
+  console.log("isLoading", isLoading);
+  if (isLoading) {
+    return (
+      <div>
+        <p>Loading...</p>
+        <SkeletonComp />
+      </div>
+    );
   }
   return (
     <div>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
@@ -50,8 +73,9 @@ const page = observer(() => {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Completed Processe Tasks</CardTitle>
-            
+            <CardTitle className="text-sm font-medium">
+              Completed Processe Tasks
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{completedTasks.length}</div>
@@ -113,7 +137,9 @@ const page = observer(() => {
           <CardHeader>
             <CardTitle>Overview</CardTitle>
           </CardHeader>
-          <CardContent className="pl-2"><PieChartComponent chartData={chartData}/></CardContent>
+          <CardContent className="pl-2">
+            <PieChartComponent chartData={chartData} />
+          </CardContent>
         </Card>
       </div>
     </div>
