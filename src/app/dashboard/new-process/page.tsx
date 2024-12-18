@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-// import { redirect } from "next/navigation";
 import { useRootStore } from "@/app/stores/RootStateContext";
 import { observer } from "mobx-react-lite";
 import ProcessForm from "@/components/ui/process/form/process-form";

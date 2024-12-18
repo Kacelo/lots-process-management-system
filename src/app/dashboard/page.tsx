@@ -1,12 +1,10 @@
 "use client";
 import React, { useEffect } from "react";
-import { redirect } from "next/navigation";
 import { useRootStore } from "@/app/stores/RootStateContext";
 import { observer } from "mobx-react-lite";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
