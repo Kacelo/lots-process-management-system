@@ -1,7 +1,7 @@
-"use client"
+"use client";
 import React, { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { StatusUpdateForm } from "@/components/ui/task-update/update-task-form";
+import { ScrutinyForm } from "@/components/ui/process-review/process-review";
 
 function WithSuspense() {
   const searchParams = useSearchParams();
@@ -10,7 +10,7 @@ function WithSuspense() {
   return (
     <div className="flex min-h-svh w-full justify-center p-2 md:p-10">
       <div className="w-full">
-      <StatusUpdateForm processId={processId as string} />
+        <ScrutinyForm processId={processId as string} />
       </div>
     </div>
   );
@@ -27,6 +27,5 @@ function Page() {
     </div>
   );
 }
-
 
 export default Page;

@@ -1,4 +1,4 @@
-import { action, makeAutoObservable } from "mobx";
+import { makeAutoObservable } from "mobx";
 import { collection, getDocs } from "firebase/firestore";
 import { firestore } from "../../../firebase";
 
@@ -8,7 +8,7 @@ class ProcessStore {
 
   constructor() {
     makeAutoObservable(this);
-    this.fetchProcesses(); 
+    this.fetchProcesses();
   }
 
   /**
@@ -24,8 +24,6 @@ class ProcessStore {
         id: doc.id,
         ...doc.data(),
       }));
-
-      console.log("Fetched processes:", this.processes);
     } catch (error) {
       console.error("Error fetching processes:", error);
     } finally {

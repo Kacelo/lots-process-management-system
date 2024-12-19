@@ -10,12 +10,11 @@ import {
 } from "@/components/ui/table";
 import { collection, getDocs } from "firebase/firestore";
 import { observer } from "mobx-react-lite";
-import { Trash2, MoreVertical, Edit } from "lucide-react";
+import { MoreVertical, Edit } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useEffect, useState } from "react";
@@ -71,7 +70,6 @@ export const AllProcessTable = observer(() => {
         ...(doc.data() as Omit<ProcessProps, "id">), // Assert the Firestore data type
       }));
 
-      console.log("Filtered processes", processList);
       setProcesses(processList);
     } catch (error) {
       console.error("Error fetching processes:", error);
@@ -127,11 +125,11 @@ export const AllProcessTable = observer(() => {
                         <Edit className="text-muted-foreground" />
                         <span>Update task</span>
                       </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem>
+                      {/* <DropdownMenuSeparator /> */}
+                      {/* <DropdownMenuItem>
                         <Trash2 className="text-muted-foreground" />
                         <span>Delete Project</span>
-                      </DropdownMenuItem>
+                      </DropdownMenuItem> */}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>

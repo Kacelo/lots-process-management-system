@@ -66,12 +66,11 @@ export const RegistrationForm = observer(function LoginForm({
 
       // await addDoc(doc(firestore, "users", user.uid), data);
       await addDoc(collection(firestore, "users"), data);
-      () => {
+     
         toast({
           title: "Congratulations",
           description: "You have succesfully signed up",
         });
-      };
       redirect("/dashboard");
       console.log("User signed up and data saved to Firestore:", user);
     } catch (error) {

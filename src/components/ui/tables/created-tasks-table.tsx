@@ -11,12 +11,7 @@ import {
 import { collection, getDocs } from "firebase/firestore";
 import { observer } from "mobx-react-lite";
 import {
-  Folder,
-  Forward,
-  MoreHorizontal,
-  Trash2,
-  MoreVertical,
-  type LucideIcon,
+  MoreVertical
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { firestore } from "../../../../firebase";
@@ -51,7 +46,6 @@ export const ProcessTable = observer(() => {
         id: doc.id, // Document ID as a unique key
         ...(doc.data() as Omit<ProcessProps, "id">), // Assert the Firestore data type
       }));
-      console.log("processes", processList);
       setProcesses(processList);
     } catch (error) {
       console.error("Error fetching users:", error);

@@ -1,5 +1,5 @@
 import { makeAutoObservable, runInAction, reaction } from "mobx";
-import { collection, getDocs, doc, updateDoc, deleteDoc } from "firebase/firestore";
+import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 import { firestore } from "../../../firebase";
 
 export class TaskStore {

@@ -2,12 +2,6 @@
 
 import * as React from "react";
 import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
-  GalleryVerticalEnd,
-  Settings2,
   ChartBar,
   CogIcon,
   Users,
@@ -21,19 +15,18 @@ import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarHeader,
   SidebarRail,
   SidebarMenu,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarGroupContent,
+  SidebarMenuItem,
+  SidebarMenuButton,
 } from "@/components/ui/sidebar";
-import { TeamSwitcher } from "./team-switcher";
-import { NavMain } from "./nav-main";
-import { NavProjects } from "./nav-projects";
 import { NavUser } from "./nav-user";
 import { useRootStore } from "@/app/stores/RootStateContext";
 import {
   collection,
-  doc,
-  getDoc,
   getDocs,
   query,
   where,
@@ -41,6 +34,8 @@ import {
 import { firestore } from "../../../../firebase";
 import { observer } from "mobx-react-lite";
 import { SkeletonCard } from "../skeleton/skeleton";
+import { NavMain } from "./nav-main";
+import { NavProjects } from "./nav-projects";
 
 // This is sample data.
 const data = {
@@ -49,107 +44,48 @@ const data = {
     email: "m@example.com",
     avatar: "",
   },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
   navMain: [
     {
-      title: "Playground",
+      // Updated to reflect "Users"
+      title: "Users",
       url: "#",
-      icon: ChartBar,
+      icon: Users,
       isActive: true,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Users Table",
+          url: "/dashboard/users-table",
         },
         {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
+          title: "Add New User",
+          url: "/dashboard/new-user",
         },
       ],
     },
     {
-      title: "Models",
+      // Updated to reflect "Processes"
+      title: "Processes",
       url: "#",
-      icon: Bot,
+      icon: CogIcon,
       items: [
         {
-          title: "Genesis",
-          url: "#",
+          title: "All Processes",
+          url: "/dashboard/all-processes",
         },
         {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
+          title: "Review Processes",
+          url: "/dashboard/review-processes",
         },
       ],
     },
     {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
+      // Updated to reflect "Processes"
+      title: "Analytics",
+      url: "/dashboard",
+      icon: ChartBar,
       items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
+{        title: "Dashboard",
+  url: "/dashboard",}
       ],
     },
   ],
@@ -170,15 +106,15 @@ const data = {
       icon: ChartBar,
     },
   ],
-  validtaor: [
+  validator: [
     {
-      name: "Users",
-      url: "/dashboard/users-table",
-      icon: Users,
+      name: "Scrutinize Processes",
+      url: "/dashboard/scrutinize-processes",
+      icon: CogIcon,
     },
     {
-      name: "Processes",
-      url: "/dashboard/all-processes",
+      name: "Review Processes",
+      url: "/dashboard/review-processes",
       icon: CogIcon,
     },
     {
@@ -189,12 +125,13 @@ const data = {
   ],
   contributor: [
     {
-      name: "Processes",
+      name: "My Tasks",
       url: "/dashboard/my-tasks",
       icon: CogIcon,
     },
   ],
 };
+
 
 export const AppSidebar = observer(
   ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
@@ -216,25 +153,22 @@ export const AppSidebar = observer(
           return;
         }
 
-        const processCollection = collection(firestore, "users");
+        const usersCollection = collection(firestore, "users");
         // Fetch matching documents
         const querySnapshot = await getDocs(
-          query(processCollection, where("uid", "==", user?.uid))
+          query(usersCollection, where("uid", "==", user?.uid))
         );
 
         // Map Firestore documents to an array of process data
-        const processList = querySnapshot.docs.map((doc) => ({
+        const userResult = querySnapshot.docs.map((doc) => ({
           id: doc.id, // Document ID as a unique key
           ...doc.data(), // Spread other fields
         }));
-
-        console.log("Filtered processes", processList);
-        setRole(processList);
+        setRole(userResult);
       } catch (error) {
         console.error("Error fetching processes:", error);
       }
     };
-
     if (user && !isLoading) {
       const userData = {
         name: user.email as string,
@@ -249,7 +183,10 @@ export const AppSidebar = observer(
         </SidebarHeader> */}
             <SidebarContent>
               {/* <NavMain items={data.navMain} /> */}
-              <NavProjects projects={data.admin} />
+              {/* <NavProjects projects={role[0]?.role === 'admin' ? data.admin : data.validtaor || role[0]?.role === 'validator'  data.validtaor : data.contributor } /> */}
+              <NavMain items={data.navMain} />
+        {/* <NavProjects projects={data.projects} /> */}
+
             </SidebarContent>
             <SidebarFooter>
               <NavUser user={userData} />

@@ -7,14 +7,13 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { SkeletonCard } from "@/components/ui/skeleton/skeleton";
 const page = observer(() => {
   const { authStore } = useRootStore();
-  const { user, isLoading } = authStore;
+  const { isLoading } = authStore;
   if (isLoading) {
     return <SkeletonCard />;
   }else{

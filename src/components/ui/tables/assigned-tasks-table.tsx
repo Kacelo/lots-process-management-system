@@ -11,13 +11,9 @@ import {
   import { collection, getDocs, query, where } from "firebase/firestore";
   import { observer } from "mobx-react-lite";
   import {
-    Folder,
-    Forward,
-    MoreHorizontal,
     Trash2,
     MoreVertical,
     Edit,
-    type LucideIcon,
   } from "lucide-react";
   import {
     DropdownMenu,
@@ -72,12 +68,11 @@ import { useRouter } from 'next/navigation';
           const querySnapshot = await getDocs(query(processCollection, where("assignee", "==", user?.email)));
       
           // Map Firestore documents to an array of process data
-          const processList = querySnapshot.docs.map((doc) => ({
+          const processList:ProcessProps[] = querySnapshot.docs.map((doc) => ({
             id: doc.id, // Document ID as a unique key
-            ...doc.data(), // Spread other fields
+            ...(doc.data() as Omit<ProcessProps, "id">), // Assert the Firestore data type
           }));
       
-          console.log("Filtered processes", processList);
           setProcesses(processList);
         } catch (error) {
           console.error("Error fetching processes:", error);

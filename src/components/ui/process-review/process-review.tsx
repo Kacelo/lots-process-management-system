@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
-// import { toast } from "@/components/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -29,41 +28,38 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-// import { firestore } from "@/firebase";
 import { useToast } from "@/hooks/use-toast";
 import { firestore } from "../../../../firebase";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
-  status: z.string().nonempty({ message: "Please select a status." }),
+  verdict: z.string().refine((value) => value === "true" || value === "false", {
+    message: "Invalid status value.",
+  }),
 });
-
-type StatusUpdateType = {
-  status: string;
-  updatedAt: Date;
-};
 
 type ProcessInterface = {
   id?: string;
   name: string;
   description: string;
-  status: string;
+  verdict?: boolean;
+
 };
 
-const statuses = [
-  { value: "in-progress", label: "In Progress" },
-  { value: "completed", label: "Completed" },
-  { value: "on-hold", label: "On Hold" },
+const verdictOptions = [
+  { value: "true", label: "Approve" },
+  { value: "false", label: "Reject" },
 ];
 
-export function StatusUpdateForm({ processId }: { processId: string }) {
+export function ScrutinyForm({ processId }: { processId: string }) {
   const { toast } = useToast();
   const [process, setProcess] = useState<ProcessInterface | null>(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
-    defaultValues: { status: "" },
+    defaultValues: { verdict: "false" },
   });
 
   // Fetch process data
@@ -83,75 +79,65 @@ export function StatusUpdateForm({ processId }: { processId: string }) {
     });
 
     return () => unsubscribe();
-  }, [processId, form]);
+  }, [processId]);
 
-  // Update process status
-  const updateProcess = async (id: string, updates: StatusUpdateType) => {
+  const updateProcess = async (id: string, updates: Partial<ProcessInterface>) => {
     try {
       const processRef = doc(firestore, "processes", id);
       await updateDoc(processRef, updates);
       toast({
         title: "Status updated!",
-        description: `The status has been updated successfully to "${updates.status}".`,
+        description: "The process status was updated successfully.",
       });
-      redirect("/all-processes");
+      router.push("/dashboard/review-processes");
     } catch (error) {
       console.error("Error updating document:", error);
       toast({
         title: "Error updating status",
-        description:
-          "There was an error updating the status. Please try again.",
+        description: "There was an error updating the status. Please try again.",
         variant: "destructive",
       });
     }
   };
 
-  // const onSubmit = (data: z.infer<typeof FormSchema>) => {
-  //   if (!processId) return;
-  //   console.log("data from from:", data);
-  //   const updateData = {
-  //     status: data.status,
-  //     updatedAt: new Date(),
-  //   };
-  async function onSubmit(values: z.infer<typeof FormSchema>) {
+  const onSubmit = (values: z.infer<typeof FormSchema>) => {
     if (!processId) return;
-    if (values.status === "completed") {
-      const updateData = {
-        status: values.status,
-        updatedAt: new Date(),
-        isReadyForScrutiny: true,
-      };
-      updateProcess(processId, updateData);
-    } else {
-      const updateData = {
-        status: values.status,
-        updatedAt: new Date(),
-      };
-      updateProcess(processId, updateData);
-    }
-  }
+
+    const isApproved = values.verdict === "true";
+    const updateData: Partial<ProcessInterface> = {
+      verdict: isApproved,
+    //   updatedAt: new Date(),
+      ...(isApproved ? { isReadyForScrutiny: true } : {}),
+    };
+
+    updateProcess(processId, updateData);
+  };
 
   if (loading) {
-    return <p>Loading...</p>; // Show loading state
+    return <p>Loading...</p>;
+  }
+
+  if (!process) {
+    return <p>Process not found.</p>;
   }
 
   return (
-    <Card className="">
+    <Card>
       <CardHeader>
-        <CardTitle>{process?.name}</CardTitle>
-        <CardDescription>{process?.description}</CardDescription>
+        <CardTitle>{process.name}</CardTitle>
+        <CardDescription>{process.description}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
-              name="status"
+              name="verdict"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Status</FormLabel>
                   <Select
-                    onValueChange={field.onChange}
+                    onValueChange={(value) => field.onChange(value)}
                     defaultValue={field.value}
                   >
                     <FormControl>
@@ -160,9 +146,9 @@ export function StatusUpdateForm({ processId }: { processId: string }) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {statuses.map((status) => (
-                        <SelectItem key={status.value} value={status.value}>
-                          {status.label}
+                      {verdictOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -179,7 +165,9 @@ export function StatusUpdateForm({ processId }: { processId: string }) {
         </Form>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Button variant="outline">Cancel</Button>
+        <Button variant="outline" onClick={() => router.push("/all-processes")}>
+          Cancel
+        </Button>
       </CardFooter>
     </Card>
   );
