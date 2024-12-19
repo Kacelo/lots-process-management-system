@@ -33,7 +33,7 @@ export default function Home() {
               className="dark:invert"
             />
           </div> */}
-          <h3 className="text-xl font-bold text-center mb-2">Manage Users</h3>
+          <h3 className="text-xl font-bold text-center mb-2 text-gray-600">Manage Users</h3>
           <p className="text-center text-gray-600">
             Easily manage user accounts, roles, and permissions from a centralized dashboard.
           </p>
@@ -49,7 +49,7 @@ export default function Home() {
               className="dark:invert"
             />
           </div> */}
-          <h3 className="text-xl font-bold text-center mb-2">Streamline Processes</h3>
+          <h3 className="text-xl font-bold text-center mb-2 text-gray-600">Streamline Processes</h3>
           <p className="text-center text-gray-600">
             Track, manage, and update processes with ease. Collaborate effectively with your team.
           </p>
@@ -65,7 +65,7 @@ export default function Home() {
               className="dark:invert"
             />
           </div> */}
-          <h3 className="text-xl font-bold text-center mb-2">Advanced Analytics</h3>
+          <h3 className="text-xl font-bold text-center mb-2 text-gray-600">Advanced Analytics</h3>
           <p className="text-center text-gray-600">
             Gain insights into your data with detailed analytics to make informed decisions.
           </p>
