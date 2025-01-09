@@ -1,9 +1,11 @@
 import { makeAutoObservable } from "mobx";
 import { collection, getDocs } from "firebase/firestore";
 import { firestore } from "../../../firebase";
+import { fetchProcesses } from "../api/processAPI";
+import { ProcessType } from "../models/processes";
 
 class ProcessStore {
-  processes: Record<string, unknown>[] = [];
+  processes: ProcessType[] = [];
   isLoading = false;
 
   constructor() {
@@ -17,13 +19,18 @@ class ProcessStore {
   async fetchProcesses() {
     this.isLoading = true;
     try {
-      const processCollection = collection(firestore, "processes");
-      const querySnapshot = await getDocs(processCollection);
-
-      this.processes = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      const fetchedProcesses = await fetchProcesses()
+      const processes = fetchedProcesses.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          assignee: data.assignee,
+          description: data.description,
+          name: data.name,
+          status: data.status,
+        }
+      });
+      this.processes = processes;
     } catch (error) {
       console.error("Error fetching processes:", error);
     } finally {
@@ -37,9 +44,9 @@ class ProcessStore {
    * @param value - The value to match (e.g., a user's email).
    * @returns Filtered processes.
    */
-  getProcessesByKey(key: string, value: unknown) {
-    return this.processes.filter((process) => process[key] === value);
-  }
+  // getProcessesByKey(key: string, value: unknown) {
+  //   return this.processes.filter((process) => process[key] === value);
+  // }
 }
 
 export default ProcessStore;

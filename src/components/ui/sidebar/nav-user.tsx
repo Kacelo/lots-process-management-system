@@ -33,15 +33,15 @@ export function NavUser({
   user: {
     name: string;
     email: string;
-    avatar: string;
+    avatar?: string;
   };
 }) {
   const { isMobile } = useSidebar();
-  const { authStore } = useRootStore();
+  const { authStore, sessionStore } = useRootStore();
   const { toast } = useToast();
   const handleLogout = async () => {
     try {
-      await authStore.logOut(); // Call the logout function
+      await sessionStore.logOut(); // Call the logout function
       toast({
         title: "Logged Out",
         description: "You have been successfully logged out.",
@@ -50,7 +50,7 @@ export function NavUser({
     } catch (error) {
       console.error("Error logging out:", error);
       toast({
-        title: "Logout Failed",
+        title: `Logout Failed, ${error}`,
         description:
           "Something went wrong while logging out. Please try again.",
         variant: "destructive",
@@ -87,7 +87,7 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
+                  {/* <AvatarImage src={user.avatar} alt={user.name} /> */}
                   <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">

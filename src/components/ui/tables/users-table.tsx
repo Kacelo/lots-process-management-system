@@ -10,76 +10,51 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { collection, getDocs } from "firebase/firestore";
 import { observer } from "mobx-react-lite";
-
-import { useEffect, useState } from "react";
-import { firestore } from "../../../../firebase";
+import { useEffect } from "react";
 import { SkeletonComp } from "../skeleton/skeleton";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
-interface usersProps {
-  name?: string;
-  email: string;
-  uid: string;
-  role?: string;
-}
 export const UsersTable = observer(() => {
-  const [users, setUsers] = useState<usersProps[]>([]);
+  const { userStore } = useRootStore();
 
-    const { authStore } = useRootStore();
-
-    const {isLoading} = authStore;
   useEffect(() => {
-    fetchUsers();
-  }, []);
-  const fetchUsers = async () => {
-    try {
-      const usersCollection = collection(firestore, "users"); // Path to the "users" collection
-      const querySnapshot = await getDocs(usersCollection);
+    userStore.fetchUsers();
+  }, [userStore]);
 
-      // Map Firestore documents to an array of user data
-      const usersList:usersProps[] = querySnapshot.docs.map((doc) => ({
-        id: doc.id, // Document ID as a unique key
-        ...(doc.data() as Omit<usersProps, "id">), // Assert the Firestore data type
-      }));
-      setUsers(usersList);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    }
-  };
-    if (isLoading) {
-      return (
-        <div>
-          <SkeletonComp />
-        </div>
-      );
-    }
+  if (userStore.isLoading) {
+    return (
+      <div>
+        <SkeletonComp />
+      </div>
+    );
+  }
   return (
     <div>
+      <Button asChild>
+        <Link href="/dashboard/new-user">Add New User</Link>
+      </Button>{" "}
       <Table>
         <TableCaption>A list of registered users.</TableCaption>
         <TableHeader>
           <TableRow>
-            {/* <TableHead className="w-[100px]">Name</TableHead> */}
             <TableHead className="w-[350px]">Email</TableHead>
             <TableHead className="w-[350px]">Role</TableHead>
-            <TableHead>Status</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {users?.map((user) => (
-            <TableRow key={user.uid}>
-              {/* <TableCell className="font-medium">{user.name || "N/A"}</TableCell> */}
+          {userStore.users?.map((user, index) => (
+            <TableRow key={user.uid || `user-${index}`}>
               <TableCell>{user.email || "N/A"}</TableCell>
               <TableCell>{user.role || "User"}</TableCell>
-              {/* <TableCell>{user.status || "Active"}</TableCell> */}
             </TableRow>
           ))}
         </TableBody>
         <TableFooter>
           <TableRow>
             <TableCell colSpan={4} className="text-right">
-              Total Users: {users?.length}
+              Total Users: {userStore.users?.length}
             </TableCell>
           </TableRow>
         </TableFooter>
