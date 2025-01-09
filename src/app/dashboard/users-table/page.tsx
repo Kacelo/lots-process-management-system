@@ -11,15 +11,16 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 function Page() {
+
+  // get current logged in user and see their role
+
+  
   return (
     <div>
       <Card className="w-full">
         <CardHeader>
           <CardTitle></CardTitle>
           <CardDescription>
-            <Button asChild>
-              <Link href="/dashboard/new-user">Add New User</Link>
-            </Button>{" "}
           </CardDescription>
         </CardHeader>
         <CardContent>

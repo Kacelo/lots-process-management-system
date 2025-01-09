@@ -8,8 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+
 function Page() {
   return (
     <div className="w-full">
@@ -17,9 +16,6 @@ function Page() {
         <CardHeader>
           <CardTitle>All Processes</CardTitle>
           <CardDescription>
-            <Button asChild>
-              <Link href="/dashboard/new-process">Add New Process</Link>
-            </Button>
           </CardDescription>
         </CardHeader>
         <CardContent>

@@ -2,16 +2,11 @@
 import React, { useEffect } from "react";
 import { useRootStore } from "@/app/stores/RootStateContext";
 import { observer } from "mobx-react-lite";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PieChartComponent } from "@/components/ui/pie-chart/pie-chart";
 import { SkeletonComp } from "@/components/ui/skeleton/skeleton";
 const page = observer(() => {
-  const { authStore, processStore } = useRootStore();
+  const { authStore, processStore, sessionStore } = useRootStore();
   const { isLoading } = authStore;
   useEffect(() => {
     processStore.fetchProcesses();
@@ -26,10 +21,9 @@ const page = observer(() => {
   const notStartedTasks = processes.filter(
     (process) => process.status === "not-started"
   );
-  const rejected = processes.filter(
-    (process) => process.isApproved === true
-  );
+  const rejected = processes.filter((process) => process.isApproved === true);
 
+  console.log(sessionStore.currentUser);
   const chartData = [
     {
       browser: "completed",
@@ -89,9 +83,8 @@ const page = observer(() => {
             <CardTitle className="text-sm font-medium">Rejected</CardTitle>
           </CardHeader>
           <CardContent>
-          <div className="text-2xl font-bold">{notStartedTasks.length}</div>
-          <p className="text-xs text-muted-foreground">
-            </p>
+            <div className="text-2xl font-bold">{notStartedTasks.length}</div>
+            <p className="text-xs text-muted-foreground"></p>
           </CardContent>
         </Card>
         <Card>
@@ -99,9 +92,8 @@ const page = observer(() => {
             <CardTitle className="text-sm font-medium">Not Started</CardTitle>
           </CardHeader>
           <CardContent>
-          <div className="text-2xl font-bold">{rejected.length}</div>
-          <p className="text-xs text-muted-foreground">
-            </p>
+            <div className="text-2xl font-bold">{rejected.length}</div>
+            <p className="text-xs text-muted-foreground"></p>
           </CardContent>
         </Card>
       </div>

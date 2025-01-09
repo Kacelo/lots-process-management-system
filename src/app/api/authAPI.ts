@@ -1,22 +1,42 @@
 import { auth, firestore } from "../../../firebase";
-import { doc, getDoc } from "firebase/firestore";
-import { signOut, onAuthStateChanged, User as FirebaseUser } from "firebase/auth";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import {
+  signOut,
+  onAuthStateChanged,
+  User as FirebaseUser,
+} from "firebase/auth";
 
 // Function to fetch user data from Firestore
 export async function fetchUserData(uid: string) {
   try {
     const userDoc = doc(firestore, "users", uid);
     const snapshot = await getDoc(userDoc);
+    console.log("user snapshot", snapshot.data());
     return snapshot.exists() ? snapshot.data() : null;
   } catch (error) {
     console.error("Error fetching user data:", error);
     throw error;
   }
 }
-
+export function fetchUserDataRealtime(uid: string, callback: (data: Record<string, unknown> | null) => void) {
+  const userDoc = doc(firestore, "users", uid);
+  return onSnapshot(
+    userDoc,
+    (snapshot) => {
+      callback(snapshot.exists() ? snapshot.data() : null);
+    },
+    (error) => {
+      console.error("Error fetching user data in real-time:", error);
+      callback(null);
+    }
+  );
+}
 // Function to handle Firebase Auth state changes
 export function initAuthListener(
-  onUserChanged: (user: FirebaseUser | null, userData: Record<string, unknown> | null) => void,
+  onUserChanged: (
+    user: FirebaseUser | null,
+    userData: Record<string, unknown> | null
+  ) => void,
   onLoadingChanged: (isLoading: boolean) => void
 ) {
   onAuthStateChanged(auth, async (firebaseUser) => {
@@ -24,6 +44,7 @@ export function initAuthListener(
     try {
       if (firebaseUser) {
         const userData = await fetchUserData(firebaseUser.uid);
+        console.log("running init auth:", userData);
         onUserChanged(firebaseUser, userData);
       } else {
         onUserChanged(null, null);
@@ -35,6 +56,33 @@ export function initAuthListener(
     onLoadingChanged(false);
   });
 }
+
+export async function fetchCurrentUserData() {
+  try {
+    const user = auth.currentUser;
+    // console.log("current user:", user);
+
+    if (user) {
+      const userDocumentRef = doc(firestore, "users", user?.uid);
+      const userSnapShot = await getDoc(userDocumentRef);
+      console.log("current user:", userSnapShot.data());
+
+      if (userSnapShot.exists()) {
+        console.log("current user:", userSnapShot.data());
+        return userSnapShot.data();
+      } else {
+        console.log("error fetching user.");
+      }
+      // return userSnapShot.exists() ? userSnapShot.data() : null;
+    }
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    throw error;
+  }
+}
+
+
+// "4qpp3UiXo8htB6Nyu0BELvPuX352"
 
 // Function to log the user out
 export async function logOut() {

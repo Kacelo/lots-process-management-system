@@ -9,9 +9,10 @@ import { useRootStore } from "@/app/stores/RootStateContext";
 
 export const NavBar = observer(() => {
   const { authStore, processStore } = useRootStore();
-  const { user } = authStore;
+  const { user, fetchUserData } = authStore;
   // const {fetchAllProcesses} = processStore;
-  // console.log("processes:",    processStore.fetchAllProcesses());
+  // fetchUserData()
+  console.log("processes:", user   );
   useEffect(() => {
     // Fetch all processes when the component mounts
     fetchData();

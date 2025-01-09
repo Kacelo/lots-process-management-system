@@ -31,13 +31,9 @@ export async function fetchAllProcesses() {
 export async function fetchProcesses() {
   try {
     const processesCollection = collection(firestore, "processes");
-
     const querySnapshot = await getDocs(processesCollection);
-    const processes = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    return processes;
+   
+    return querySnapshot;
   } catch (error) {
     console.error("Error fetching processes:", error);
     throw error;
