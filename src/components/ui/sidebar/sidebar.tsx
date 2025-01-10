@@ -18,6 +18,7 @@ import {
   SidebarGroupContent,
   SidebarMenuItem,
   SidebarMenuButton,
+  SidebarHeader,
 } from "@/components/ui/sidebar";
 import { NavUser } from "./nav-user";
 import { useRootStore } from "@/app/stores/RootStateContext";
@@ -28,6 +29,7 @@ import { SkeletonCard } from "../skeleton/skeleton";
 import { NavMain } from "./nav-main";
 import { NavProjects } from "./nav-projects";
 import { toJS } from "mobx";
+import { ModeToggle } from "../mode-toggle";
 // import { toJS } from 'mobx';
 
 // This is sample data.
@@ -73,7 +75,7 @@ const data = {
     },
     {
       // Updated to reflect "Processes"
-      title: "Analytics",
+      title: "Dashboard",
       url: "/dashboard",
       icon: ChartBar,
       items: [{ title: "Dashboard", url: "/dashboard" }],
@@ -115,7 +117,7 @@ const data = {
     },
     {
       // Updated to reflect "Processes"
-      title: "Analytics",
+      title: "Dashboard",
       url: "/dashboard",
       icon: ChartBar,
       items: [{ title: "Dashboard", url: "/dashboard" }],
@@ -144,7 +146,7 @@ const data = {
     },
     {
       // Updated to reflect "Processes"
-      title: "Analytics",
+      title: "Dashboard",
       url: "/dashboard",
       icon: ChartBar,
       items: [{ title: "Dashboard", url: "/dashboard" }],
@@ -193,11 +195,15 @@ export const AppSidebar = observer(
       return (
         <div>
           <Sidebar collapsible="icon" {...props}>
+            <SidebarHeader>
+              <h1>AutomatePro</h1>
+            </SidebarHeader>
             <SidebarContent>
               <NavMain items={navItems} />
             </SidebarContent>
             <SidebarFooter>
               <NavUser user={userData} />
+              <ModeToggle />
             </SidebarFooter>
             <SidebarRail />
           </Sidebar>
