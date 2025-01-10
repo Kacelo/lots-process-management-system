@@ -22,6 +22,8 @@ import { useRouter } from "next/navigation";
 import { SkeletonComp } from "../skeleton/skeleton";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { DataTable } from "./data-table/data-table";
+import { processColumns } from "./data-table/columns";
 
 export const AllProcessTable = observer(() => {
   const router = useRouter();
@@ -44,9 +46,14 @@ export const AllProcessTable = observer(() => {
   } else {
     return (
       <div className="rounded-md border">
+        <div className="m-[15px]">
         <Button asChild>
           <Link href="/dashboard/new-process">Add New Process</Link>
         </Button>
+        </div>
+        <div className="container mx-auto py-10">
+      <DataTable columns={processColumns} data={processStore.processes} />
+    </div>
         <Table>
           <TableCaption>A list of processes.</TableCaption>
           <TableHeader>
@@ -55,6 +62,7 @@ export const AllProcessTable = observer(() => {
               <TableHead className="w-[150px]">Assignee</TableHead>
               <TableHead className="w-[150px]">Description</TableHead>
               <TableHead className="w-[150px]">Status</TableHead>
+              <TableHead className="w-[150px]">Created By</TableHead>
               <TableHead className="w-[150px]">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -67,7 +75,7 @@ export const AllProcessTable = observer(() => {
                 <TableCell>{process.assignee || "N/A"}</TableCell>
                 <TableCell>{process.description || "User"}</TableCell>
                 <TableCell>{process.status || "N/A"}</TableCell>
-
+                <TableCell>{process.assignee || "N/A"}</TableCell>
                 <TableCell>
                   {" "}
                   <DropdownMenu>

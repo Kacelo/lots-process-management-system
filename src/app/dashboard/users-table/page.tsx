@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { DataTable } from "@/components/ui/tables/data-table/data-table";
+import { processColumns } from "@/components/ui/tables/data-table/columns";
 function Page() {
 
   // get current logged in user and see their role
@@ -17,10 +19,14 @@ function Page() {
   
   return (
     <div>
+      
       <Card className="w-full">
         <CardHeader>
-          <CardTitle></CardTitle>
+          <CardTitle>
+          <h2 className="text-2xl font-bold tracking-tight">Registered Users</h2>
+          </CardTitle>
           <CardDescription>
+            View and manage users
           </CardDescription>
         </CardHeader>
         <CardContent>

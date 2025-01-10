@@ -1,5 +1,5 @@
 export type ProcessType = {
-  isApproved: boolean;
+  isApproved?: boolean;
   assignee: string;
   createdAt?: string;
   createdBy?: string;
