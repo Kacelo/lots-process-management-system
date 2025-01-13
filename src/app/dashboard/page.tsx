@@ -52,8 +52,8 @@ const page = observer(() => {
   }
   return (
     <div>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6 mb-[20px]">
-        <Card>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-[20px]">
+        <Card className="h-[150px]">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Total Processes
@@ -107,7 +107,7 @@ const page = observer(() => {
             <PieChartComponent chartData={chartData} />
           </CardContent>
         </Card>
-        <div className="col-span-2">
+        <div className="md:col-span-3 lg:col-span-3 col-span-3">
            <RecentTasks />
         </div>
       </div>

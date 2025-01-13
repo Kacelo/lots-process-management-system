@@ -178,7 +178,7 @@ export const AppSidebar = observer(
     console.log("user data:", sessionStore.userData);
     if (!isLoading) {
       const userData = {
-        name: userDetails?.email as string,
+        username: userDetails?.email as string,
         email: userDetails?.email as string,
         avatar: "",
       };
