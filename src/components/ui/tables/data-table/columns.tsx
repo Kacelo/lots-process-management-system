@@ -2,18 +2,8 @@
 
 import { ProcessType } from "@/app/models/processes";
 import { ColumnDef } from "@tanstack/react-table";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
-import { useRouter } from "next/router";
-import { TableActions } from "./table-actions";
+import { TableActions, UserTableActions } from "./table-actions";
+import { User } from "@/app/models/users";
 
 export const processColumns: ColumnDef<ProcessType>[] = [
   {
@@ -47,31 +37,34 @@ export const processColumns: ColumnDef<ProcessType>[] = [
         return null;
       }
       return <TableActions processId={id} />;
-      // const handleEditClick = (processId: string) => {
-      //   // Navigate to the /dashboard/update-tasks route with process.id as a query param
-      //   console.log("clicked", processId);
-      //   // router.push(`/dashboard/update-task?processId=${processId}`);
-      // };
+    },
+  },
+];
 
-      // return (
-      //   <DropdownMenu>
-      //     <DropdownMenuTrigger asChild>
-      //       <Button variant="ghost" className="h-8 w-8 p-0">
-      //         <span className="sr-only">Open menu</span>
-      //         <MoreHorizontal className="h-4 w-4" />
-      //       </Button>
-      //     </DropdownMenuTrigger>
-      //     <DropdownMenuContent align="end">
-      //       <DropdownMenuLabel>Actions</DropdownMenuLabel>
-      //       <DropdownMenuItem onClick={() => handleEditClick(process.id)}>
-      //         Update Task
-      //       </DropdownMenuItem>
-      //       {/* <DropdownMenuSeparator /> */}
-      //       {/* <DropdownMenuItem>View customer</DropdownMenuItem>
-      //       <DropdownMenuItem>View payment details</DropdownMenuItem> */}
-      //     </DropdownMenuContent>
-      //   </DropdownMenu>
-      // );
+export const userTableColumns: ColumnDef<User>[] = [
+  {
+    accessorKey: "email",
+    header: "Email",
+  },
+  {
+    accessorKey: "role",
+    header: "Role",
+  },
+  // {
+  //   accessorKey: "assignee",
+  //   header: "Created By",
+  // },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const user = row.original;
+      const { uid } = user;
+      //   const router = useRouter();
+      if (!uid) {
+        console.error("Missing process ID", user);
+        return null;
+      }
+      return <UserTableActions userId={uid} />;
     },
   },
 ];
