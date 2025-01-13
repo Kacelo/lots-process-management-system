@@ -18,10 +18,12 @@ function Page() {
           <CardDescription>
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <AllProcessTable />{" "}
-        </CardContent>
+        {/* <CardContent>
+        </CardContent> */}
+
       </Card>
+      <AllProcessTable />{" "}
+
     </div>
   );
 }

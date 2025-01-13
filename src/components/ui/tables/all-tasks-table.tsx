@@ -31,7 +31,7 @@ export const AllProcessTable = observer(() => {
   const { processStore, userStore } = useRootStore();
   const { isLoading } = processStore;
   useEffect(() => {
-    processStore.fetchProcesses()
+    processStore.fetchProcesses();
   }, [processStore]);
   const handleEditClick = (processId: string) => {
     // Navigate to the /dashboard/update-tasks route with process.id as a query param
@@ -47,13 +47,13 @@ export const AllProcessTable = observer(() => {
     return (
       <div className="rounded-md border">
         <div className="m-[15px]">
-        <Button asChild>
-          <Link href="/dashboard/new-process">Add New Process</Link>
-        </Button>
+          <Button asChild>
+            <Link href="/dashboard/new-process">Add New Process</Link>
+          </Button>
         </div>
         <div className="container mx-auto py-10">
-      <DataTable columns={processColumns} data={processStore.processes} />
-    </div>
+          <DataTable columns={processColumns} data={processStore.processes} />
+        </div>
       </div>
     );
   }
