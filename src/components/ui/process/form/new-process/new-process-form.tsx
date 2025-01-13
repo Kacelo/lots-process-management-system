@@ -86,7 +86,7 @@ const NewProcess = ({ userId }: NewProcessProps) => {
     console.log(data);
   }
   return (
-    <Card className="lg:w-[750px]">
+    <Card className="lg:w-[600px] md:w-[400px] xl:w-[800px]">
       <CardHeader>
         <CardTitle>Create a new process</CardTitle>
       </CardHeader>

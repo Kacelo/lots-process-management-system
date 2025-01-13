@@ -52,29 +52,31 @@ export function DataTable<TData, TValue>({
       columnFilters,
     },
   });
-  console.log("table col:", table.getColumn("email"));
+  const emailColumn = table.getColumn("email");
+const nameColumn = table.getColumn("name");
+
+// Determine the active column for filtering
+const filterColumn = emailColumn ?? nameColumn;
+
+// Check if a valid filter column exists
+if (!filterColumn) {
+  console.error("No valid column for filtering.");
+  return <div>No columns available for filtering.</div>;
+}
+  console.log(table.getAllColumns());
   return (
     <div>
-      <div className="flex items-center py-4">
-        {(table.getColumn("email")?.id === "email")? (
+      <div>
+        <div className="flex items-center py-4">
           <Input
-            placeholder="Filter emails..."
-            value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+        placeholder={`Filter ${emailColumn ? "emails" : "names"}...`}
+        value={(filterColumn?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
-              table.getColumn("email")?.setFilterValue(event.target.value)
+              filterColumn?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
           />
-        ) : (
-          <Input
-            placeholder="Filter Names..."
-            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn("name")?.setFilterValue(event.target.value)
-            }
-            className="max-w-sm"
-          />
-        )}
+        </div>
       </div>
       <div className="rounded-md border ">
         <Table>
