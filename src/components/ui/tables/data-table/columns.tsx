@@ -4,6 +4,8 @@ import { ProcessType } from "@/app/models/processes";
 import { ColumnDef } from "@tanstack/react-table";
 import { TableActions, UserTableActions } from "./table-actions";
 import { User } from "@/app/models/users";
+import { Button } from "../../button";
+import { ArrowUpDown } from "lucide-react";
 
 export const processColumns: ColumnDef<ProcessType>[] = [
   {
@@ -44,7 +46,17 @@ export const processColumns: ColumnDef<ProcessType>[] = [
 export const userTableColumns: ColumnDef<User>[] = [
   {
     accessorKey: "email",
-    header: "Email",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Email
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
   },
   {
     accessorKey: "role",
