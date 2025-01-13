@@ -10,7 +10,17 @@ import { ArrowUpDown } from "lucide-react";
 export const processColumns: ColumnDef<ProcessType>[] = [
   {
     accessorKey: "name",
-    header: "Name",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Name
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
   },
   {
     accessorKey: "description",
@@ -22,7 +32,17 @@ export const processColumns: ColumnDef<ProcessType>[] = [
   },
   {
     accessorKey: "assignee",
-    header: "Assignee",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Assignee
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
   },
   // {
   //   accessorKey: "assignee",
