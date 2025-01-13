@@ -54,55 +54,6 @@ export const AllProcessTable = observer(() => {
         <div className="container mx-auto py-10">
       <DataTable columns={processColumns} data={processStore.processes} />
     </div>
-        <Table>
-          <TableCaption>A list of processes.</TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[150px]">Name</TableHead>
-              <TableHead className="w-[150px]">Assignee</TableHead>
-              <TableHead className="w-[150px]">Description</TableHead>
-              <TableHead className="w-[150px]">Status</TableHead>
-              <TableHead className="w-[150px]">Created By</TableHead>
-              <TableHead className="w-[150px]">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {processStore.processes?.map((process, index) => (
-              <TableRow key={index}>
-                <TableCell className="font-medium">
-                  {process.name || "N/A"}
-                </TableCell>
-                <TableCell>{process.assignee || "N/A"}</TableCell>
-                <TableCell>{process.description || "User"}</TableCell>
-                <TableCell>{process.status || "N/A"}</TableCell>
-                <TableCell>{process.assignee || "N/A"}</TableCell>
-                <TableCell>
-                  {" "}
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <MoreVertical className="text-sidebar-foreground/70" />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-48 rounded-lg">
-                      <DropdownMenuItem
-                        onClick={() => handleEditClick(process.id)}
-                      >
-                        <Edit className="text-muted-foreground" />
-                        <span>Update task</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TableCell colSpan={4} className="text-right">
-                Total Processes: {processStore.processes?.length}
-              </TableCell>
-            </TableRow>
-          </TableFooter>
-        </Table>
       </div>
     );
   }
