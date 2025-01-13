@@ -5,6 +5,7 @@ import { observer } from "mobx-react-lite";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PieChartComponent } from "@/components/ui/pie-chart/pie-chart";
 import { SkeletonComp } from "@/components/ui/skeleton/skeleton";
+import RecentTasks from "@/components/dashboard-components/recent-tasks";
 const page = observer(() => {
   const { authStore, processStore, sessionStore } = useRootStore();
   const { isLoading } = authStore;
@@ -51,8 +52,8 @@ const page = observer(() => {
   }
   return (
     <div>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6">
-        <Card>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-[20px]">
+        <Card className="h-[150px]">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Total Processes
@@ -68,7 +69,7 @@ const page = observer(() => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Completed Processe Tasks
+              Completed Process Tasks
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -80,7 +81,7 @@ const page = observer(() => {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Rejected</CardTitle>
+            <CardTitle className="text-sm font-medium">Not Started</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{notStartedTasks.length}</div>
@@ -89,7 +90,7 @@ const page = observer(() => {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Not Started</CardTitle>
+            <CardTitle className="text-sm font-medium">Rejected</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{rejected.length}</div>
@@ -97,8 +98,8 @@ const page = observer(() => {
           </CardContent>
         </Card>
       </div>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6">
+        <Card className="col-span-3">
           <CardHeader>
             <CardTitle>Overview</CardTitle>
           </CardHeader>
@@ -106,7 +107,11 @@ const page = observer(() => {
             <PieChartComponent chartData={chartData} />
           </CardContent>
         </Card>
+        <div className="md:col-span-3 lg:col-span-3 col-span-3">
+           <RecentTasks />
+        </div>
       </div>
+      
     </div>
   );
 });

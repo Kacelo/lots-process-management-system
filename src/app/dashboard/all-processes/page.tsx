@@ -12,16 +12,7 @@ import {
 function Page() {
   return (
     <div className="w-full">
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle>All Processes</CardTitle>
-          <CardDescription>
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <AllProcessTable />{" "}
-        </CardContent>
-      </Card>
+      <AllProcessTable />{" "}
     </div>
   );
 }

@@ -37,7 +37,6 @@ class ProcessStore {
       this.isLoading = false;
     }
   }
-
   /**
    * Filters processes by a specific criterion (e.g., assignee or status).
    * @param key - The key to filter by (e.g., "assignee").
