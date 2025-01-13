@@ -45,13 +45,18 @@ export const AllProcessTable = observer(() => {
     );
   } else {
     return (
-      <div className="rounded-md border">
+      <div className="rounded-md border p-5">
+        <div className="m-[15px]">
+          <h1 className="scroll-m-20 text-3xl font-extrabold tracking-tight lg:text-4xl">
+            All Processes
+          </h1>
+        </div>
         <div className="m-[15px]">
           <Button asChild>
             <Link href="/dashboard/new-process">Add New Process</Link>
           </Button>
         </div>
-        <div className="container mx-auto py-10">
+        <div className="container mx-auto">
           <DataTable columns={processColumns} data={processStore.processes} />
         </div>
       </div>
