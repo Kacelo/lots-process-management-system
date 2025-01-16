@@ -32,13 +32,11 @@ class SessionStore {
         if (user) {
           this.isLoading = true;
           this.currentUser = user;
-          console.log("fetched user", this.currentUser);
           const usersRef = collection(firestore, "users");
           const q = query(usersRef, where("uid", "==", user.uid as string));
           
           try {
             const querySnapshot = await getDocs(q);
-            console.log("User data fetched:", querySnapshot);
           
             if (!querySnapshot.empty) {
               const fetchedUser = querySnapshot.docs.map((doc) => {
@@ -50,7 +48,6 @@ class SessionStore {
                 };
               })[0]; 
               this.userData = fetchedUser;
-              console.log("User data fetched:", this.userData);
             } else {
               console.log("No user found with the given UID.");
             }
