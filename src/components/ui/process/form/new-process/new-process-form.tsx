@@ -34,7 +34,7 @@ import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const formSchema = z.object({
   name: z.string().min(2).max(50),
@@ -58,7 +58,9 @@ interface ProcessInterface {
 const NewProcess = ({ userId }: NewProcessProps) => {
   const { processStore } = useRootStore();
   const [date, setDate] = React.useState<Date>();
+  const [processId, setProcessId] = React.useState<any>();
   const pathname = usePathname();
+  const router = useRouter();
 
   const defaultProcessDetails: ProcessInterface = {
     name: "",
@@ -81,26 +83,49 @@ const NewProcess = ({ userId }: NewProcessProps) => {
       dueDate: defaultProcessDetails.dueDate,
     },
   });
-  function onSubmit(data: z.infer<typeof formSchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
-
-    const newProcessDetails = {
-      ...defaultProcessDetails,
-      name: data.name,
-      description: data.description,
-      dueDate: Timestamp.fromDate(data.dueDate),
-    };
-    const newProcess = processStore.newProcess(newProcessDetails);
-    console.log("new process created:", newProcess);
-    console.log(data);
+  async function onSubmit(data: z.infer<typeof formSchema>) {
+    try {
+      // Show toast notification
+      toast({
+        title: "You submitted the following values:",
+        description: (
+          <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+            <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+          </pre>
+        ),
+      });
+  
+      // Prepare process details
+      const newProcessDetails = {
+        ...defaultProcessDetails,
+        name: data.name,
+        description: data.description,
+        dueDate: Timestamp.fromDate(data.dueDate),
+      };
+  
+      // Call async function to create a new process
+      const newProcess = await processStore.newProcess(newProcessDetails);
+  
+      if (newProcess) {
+        setProcessId(newProcess);
+        console.log("New process created:", newProcess);
+      } else {
+        console.error("Failed to create a new process.");
+      }
+    } catch (error) {
+      console.error("Error while submitting form:", error);
+      toast({
+        title: "Error",
+        description: "There was an issue creating the process.",
+        // status: "error",
+      });
+    }
   }
+  const handleTaskAdd = (processId: any) => {
+    if (processId) {
+      router.push(`/dashboard/new-tasks?processId=${processId}`);
+    }
+  };
   return (
     <Card className="lg:w-[600px] md:w-[400px] xl:w-[800px]">
       <CardHeader>
@@ -189,8 +214,10 @@ const NewProcess = ({ userId }: NewProcessProps) => {
 
             {/* Submit Button */}
             <div className="space-x-2">
-              <Button type="submit">Submit</Button>
-              <Button>Next</Button>
+              {!processId && <Button type="submit">Submit</Button>}
+              {processId && (
+                <Button onClick={()=>handleTaskAdd(processId)}>Next</Button>
+              )}
             </div>
           </form>
         </Form>

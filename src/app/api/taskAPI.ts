@@ -53,6 +53,7 @@ export async function fetchAllProcessTasks(processId: string) {
 }
 
 export async function addNewTask(taskData: TaskSchema) {
+  console.log('received task data', taskData)
   try {
     if (!taskData) {
         throw new Error("Task data not provided");
@@ -70,8 +71,8 @@ export async function addNewTask(taskData: TaskSchema) {
         createdBy: taskData.createdBy,
         dueDate: taskData.dueDate,
         completedAt: taskData.completedAt ?? null,
-        isArchived: taskData.isArchived,
-        taskIndex: taskData.taskIndex,
+        isArchived: taskData.isArchived ?? null,
+        taskIndex: taskData.taskIndex ?? null,
       });
       console.log("Task successfully created with ID:", docRef.id);
       return docRef.id;

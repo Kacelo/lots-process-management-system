@@ -38,7 +38,7 @@ import { Separator } from "@/components/ui/separator";
 import { ProcessType } from "@/app/models/processes";
 import { Textarea } from "@/components/ui/textarea";
 import { Timestamp } from "firebase/firestore";
-import { ProcessInterface } from "@/app/interfaces/interfaces";
+import { ProcessInterface, TaskSchema } from "@/app/interfaces/interfaces";
 const formSchema = z.object({
   taskname: z.string().min(2, {
     message: "Username must be at least 2 characters.",
@@ -54,23 +54,24 @@ const taskFormSchema = z.object({
   }),
 });
 
-interface TaskSchema {
-  taskname: string;
-  description: string;
-  processId: string;
-  status: string;
-  assigneeId: string;
-  createdBy: string;
-  dueDate: string;
-  completedAt: string;
-  isArchived: string;
-  taskIndex: number;
-}
+// interface TaskSchema {
+//   taskname: string;
+//   description: string;
+//   processId: string;
+//   status: string;
+//   assigneeId: string;
+//   createdBy: string;
+//   dueDate: string;
+//   completedAt: string;
+//   isArchived: string;
+//   taskIndex: number;
+// }
 interface TaskFormSchema {
   focusedProcess: ProcessInterface| undefined;
 }
 interface TaskUpdateSchema {
   focusedTask: string;
+  focusedProcess: ProcessInterface;
 }
 export function TaskForm({ focusedProcess }: TaskFormSchema) {
   const [focusedTask, setFocusedTask] = useState("");
@@ -132,7 +133,7 @@ export function TaskForm({ focusedProcess }: TaskFormSchema) {
             </div>
           </div>
           <div className="aspect-video rounded-xl bg-muted/50 w-3/4">
-            <TaskEditForm focusedTask={focusedTask} />
+            <TaskEditForm focusedTask={focusedTask} focusedProcess={focusedProcess as ProcessInterface} />
           </div>
         </div>
       </div>
@@ -140,7 +141,7 @@ export function TaskForm({ focusedProcess }: TaskFormSchema) {
   );
 }
 
-const TaskEditForm = ({ focusedTask }: TaskUpdateSchema) => {
+const TaskEditForm = ({ focusedTask, focusedProcess }: TaskUpdateSchema) => {
   const { userStore, taskStore } = useRootStore();
   const {addNewTask} = taskStore
   useEffect(() => {
@@ -161,10 +162,51 @@ const TaskEditForm = ({ focusedTask }: TaskUpdateSchema) => {
       dueDate: new Date(),
     },
   });
-
-  function onSubmit(values: z.infer<typeof taskFormSchema>) {
+  const defaultTaskDetails: TaskSchema = {
+    taskname: focusedTask,
+    description: "",
+    status: "not-started",
+    processId: focusedProcess?.id as string,
+    createdBy: focusedProcess?.createdBy
+  }
+  async function onSubmit(values: z.infer<typeof taskFormSchema>) {
     console.log("submitted values:", values);
+  try {
+    // Show toast notification
+    // toast({
+    //   title: "You submitted the following values:",
+    //   description: (
+    //     <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+    //       <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+    //     </pre>
+    //   ),
+    // });
 
+    // Prepare process details
+    const newTaskDetails = {
+      ...defaultTaskDetails,
+      assigneeId: values.assigneeId,
+      description: values.description,
+      dueDate: Timestamp.fromDate(values.dueDate),
+    };
+
+    // Call async function to create a new process
+    const newProcess = await taskStore.addNewTask(newTaskDetails);
+
+    if (newProcess) {
+      // setProcessId(newProcess);
+      console.log("New process created:", newProcess);
+    } else {
+      console.error("Failed to create a new process.");
+    }
+  } catch (error) {
+    console.error("Error while submitting form:", error);
+    // toast({
+    //   title: "Error",
+    //   description: "There was an issue creating the process.",
+    //   // status: "error",
+    // });
+  }
     // set assigneeId, dueDate, description,status
     // Timestamp.fromDate(new Date("2025-01-15T15:00:00Z"))
   }

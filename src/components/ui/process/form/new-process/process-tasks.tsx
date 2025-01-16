@@ -24,11 +24,12 @@ function ProcessTask({ processId }: TaskProps) {
     } else {
       handleFocusedProcess(processId);
     }
-  }, [processId, processes, processStore]);
+  }, [processes, processStore]);
 
   const handleFocusedProcess = (processId: string) => {
-    console.log("Running");
+    console.log("Running", processes);
     const foundProcess = processes.find((process) => process.id === processId);
+    console.log(focusedProcess)
     setFocusedProcess(foundProcess);
   };
 

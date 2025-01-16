@@ -15,12 +15,12 @@ export interface ProcessInterface {
     taskname: string;
     description: string;
     processId: string;
-    status: string;
-    assigneeId: string;
-    createdBy: string;
-    dueDate: Timestamp;
+    status?: string;
+    assigneeId?: string;
+    createdBy?: string;
+    dueDate?: Timestamp;
     completedAt?: Timestamp; // Optional field
-    isArchived: boolean;
-    taskIndex: number;
+    isArchived?: boolean;
+    taskIndex?: number;
     id?:string;
   }

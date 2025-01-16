@@ -47,7 +47,7 @@ class ProcessStore {
       runInAction(() => {
         this.processes.push(newProcess); // Add the new task to the state
       });
-      return newProcess;
+      return newProcessId;
     } catch (error) {
       console.error("Error adding new process:", error);
       throw error;
