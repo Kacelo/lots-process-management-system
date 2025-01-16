@@ -38,7 +38,7 @@ import { Separator } from "@/components/ui/separator";
 import { ProcessType } from "@/app/models/processes";
 import { Textarea } from "@/components/ui/textarea";
 import { Timestamp } from "firebase/firestore";
-
+import { ProcessInterface } from "@/app/interfaces/interfaces";
 const formSchema = z.object({
   taskname: z.string().min(2, {
     message: "Username must be at least 2 characters.",
@@ -67,13 +67,15 @@ interface TaskSchema {
   taskIndex: number;
 }
 interface TaskFormSchema {
-  focusedProcess: ProcessType | undefined;
+  focusedProcess: ProcessInterface| undefined;
 }
 interface TaskUpdateSchema {
   focusedTask: string;
 }
 export function TaskForm({ focusedProcess }: TaskFormSchema) {
   const [focusedTask, setFocusedTask] = useState("");
+  const { taskStore } = useRootStore();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -139,11 +141,12 @@ export function TaskForm({ focusedProcess }: TaskFormSchema) {
 }
 
 const TaskEditForm = ({ focusedTask }: TaskUpdateSchema) => {
-  const { userStore } = useRootStore();
-
+  const { userStore, taskStore } = useRootStore();
+  const {addNewTask} = taskStore
   useEffect(() => {
     userStore.fetchUsers();
-  }, [userStore]);
+    taskStore.loadTasks("d4qNatMSpwEa9mVxJJbP");
+  }, [userStore, taskStore]);
 
   const { users } = userStore;
   const userOptions =
@@ -154,7 +157,6 @@ const TaskEditForm = ({ focusedTask }: TaskUpdateSchema) => {
   const form = useForm<z.infer<typeof taskFormSchema>>({
     resolver: zodResolver(taskFormSchema),
     defaultValues: {
-      taskname: "",
       assigneeId: "",
       dueDate: new Date(),
     },
@@ -162,6 +164,7 @@ const TaskEditForm = ({ focusedTask }: TaskUpdateSchema) => {
 
   function onSubmit(values: z.infer<typeof taskFormSchema>) {
     console.log("submitted values:", values);
+
     // set assigneeId, dueDate, description,status
     // Timestamp.fromDate(new Date("2025-01-15T15:00:00Z"))
   }

@@ -3,11 +3,12 @@ import { Timestamp } from "firebase/firestore";
 export interface ProcessInterface {
     name: string;
     description: string;
-    createdBy: string;
+    createdBy?: string;
     createdAt?: string;
     status?: "not-started" | "in-progress" | "completed";
-    assignee?: string;
     isApproved?: boolean;
+    dueDate?: Timestamp;
+    id?: string
   }
   
   export interface TaskSchema {
@@ -21,4 +22,5 @@ export interface ProcessInterface {
     completedAt?: Timestamp; // Optional field
     isArchived: boolean;
     taskIndex: number;
+    id?:string;
   }

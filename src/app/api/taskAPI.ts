@@ -44,7 +44,7 @@ export async function fetchAllProcessTasks(processId: string) {
       where("processId", "==", processId)
     );
     const querySnapshot = await getDocs(taskQuery);
-    const tasks = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    const tasks = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data()}));
     return tasks;
   } catch (error) {
     console.error("Error fetching tasks for process:", error);

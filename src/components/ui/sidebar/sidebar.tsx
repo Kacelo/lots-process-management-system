@@ -175,7 +175,6 @@ export const AppSidebar = observer(
     }, [sessionStore]);
     const { isLoading } = sessionStore;
     const userDetails = toJS(sessionStore.userData);
-    console.log("user data:", sessionStore.userData);
     if (!isLoading) {
       const userData = {
         username: userDetails?.email as string,

@@ -1,16 +1,17 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import { collection, getDocs } from "firebase/firestore";
 import { firestore } from "../../../firebase";
-import { fetchProcesses } from "../api/processAPI";
+import { createNewProcess, fetchProcesses } from "../api/processAPI";
 import { ProcessType } from "../models/processes";
+import { ProcessInterface } from "../interfaces/interfaces";
 
 class ProcessStore {
-  processes: ProcessType[] = [];
+  processes: ProcessInterface[] = [];
   isLoading = false;
 
   constructor() {
     makeAutoObservable(this);
-    this.fetchProcesses();
+    // this.fetchProcesses();
   }
 
   /**
@@ -19,22 +20,37 @@ class ProcessStore {
   async fetchProcesses() {
     this.isLoading = true;
     try {
-      const fetchedProcesses = await fetchProcesses()
+      const fetchedProcesses = await fetchProcesses();
       const processes = fetchedProcesses.docs.map((doc) => {
         const data = doc.data();
         return {
           id: doc.id,
-          assignee: data.assignee,
           description: data.description,
           name: data.name,
           status: data.status,
-        }
+          createdBy: data.createdBy,
+          dueDate: data.dueDate.toDate().toLocaleDateString()
+          ,
+        };
       });
       this.processes = processes;
     } catch (error) {
       console.error("Error fetching processes:", error);
     } finally {
       this.isLoading = false;
+    }
+  }
+  async newProcess(processData: ProcessInterface) {
+    try {
+      const newProcessId = await createNewProcess(processData);
+      const newProcess: ProcessInterface = { ...processData, id: newProcessId };
+      runInAction(() => {
+        this.processes.push(newProcess); // Add the new task to the state
+      });
+      return newProcess;
+    } catch (error) {
+      console.error("Error adding new process:", error);
+      throw error;
     }
   }
   /**

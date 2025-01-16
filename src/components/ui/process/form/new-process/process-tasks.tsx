@@ -2,6 +2,7 @@ import { ProcessType } from "@/app/models/processes";
 import { useRootStore } from "@/app/stores/RootStateContext";
 import React, { useEffect, useState } from "react";
 import { TaskForm } from "../tasks/task-form";
+import { ProcessInterface } from "@/app/interfaces/interfaces";
 
 interface TaskProps {
   processId: string;
@@ -9,7 +10,7 @@ interface TaskProps {
 
 function ProcessTask({ processId }: TaskProps) {
   const [focusedProcess, setFocusedProcess] = useState<
-    ProcessType | undefined
+    ProcessInterface | undefined
   >();
   const { processStore } = useRootStore();
   const { isLoading, processes } = processStore;

@@ -14,7 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { addDoc, collection, getDocs } from "firebase/firestore";
+import { Timestamp, addDoc, collection, getDocs } from "firebase/firestore";
 // import { firestore } from "../../../../../firebase"; // Adjust path as needed
 import { useRootStore } from "@/app/stores/RootStateContext";
 import {
@@ -34,6 +34,7 @@ import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
+import { usePathname } from "next/navigation";
 
 const formSchema = z.object({
   name: z.string().min(2).max(50),
@@ -55,7 +56,9 @@ interface ProcessInterface {
 }
 
 const NewProcess = ({ userId }: NewProcessProps) => {
+  const { processStore } = useRootStore();
   const [date, setDate] = React.useState<Date>();
+  const pathname = usePathname();
 
   const defaultProcessDetails: ProcessInterface = {
     name: "",
@@ -65,7 +68,11 @@ const NewProcess = ({ userId }: NewProcessProps) => {
     dueDate: new Date(),
     status: "not-started",
   };
-
+  function switchLocale(locale: string) {
+    // e.g. '/en/about' or '/fr/contact'
+    const newPath = `/${locale}${pathname}`;
+    window.history.replaceState(null, "", newPath);
+  }
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -83,6 +90,15 @@ const NewProcess = ({ userId }: NewProcessProps) => {
         </pre>
       ),
     });
+
+    const newProcessDetails = {
+      ...defaultProcessDetails,
+      name: data.name,
+      description: data.description,
+      dueDate: Timestamp.fromDate(data.dueDate),
+    };
+    const newProcess = processStore.newProcess(newProcessDetails);
+    console.log("new process created:", newProcess);
     console.log(data);
   }
   return (
@@ -116,7 +132,10 @@ const NewProcess = ({ userId }: NewProcessProps) => {
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="What will this process be used for?" {...field} />
+                    <Textarea
+                      placeholder="What will this process be used for?"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -130,7 +149,7 @@ const NewProcess = ({ userId }: NewProcessProps) => {
               name="dueDate"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Date of birth</FormLabel>
+                  <FormLabel>Due Date</FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -170,10 +189,9 @@ const NewProcess = ({ userId }: NewProcessProps) => {
 
             {/* Submit Button */}
             <div className="space-x-2">
-            <Button type="submit">Submit</Button>
-            <Button>Next</Button>
+              <Button type="submit">Submit</Button>
+              <Button>Next</Button>
             </div>
-        
           </form>
         </Form>
       </CardContent>

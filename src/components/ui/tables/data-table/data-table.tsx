@@ -52,7 +52,7 @@ export function DataTable<TData, TValue>({
       columnFilters,
     },
   });
-  const emailColumn = table.getColumn("email");
+  const emailColumn = table?.getColumn("email");
 const nameColumn = table.getColumn("name");
 
 // Determine the active column for filtering

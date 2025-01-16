@@ -1,4 +1,3 @@
-
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import { useRootStore } from "@/app/stores/RootStateContext";
@@ -9,13 +8,12 @@ import { DataTable } from "./data-table/data-table";
 import { processColumns } from "./data-table/columns";
 
 export const AllProcessTable = observer(() => {
-
   const { processStore } = useRootStore();
   const { isLoading } = processStore;
   useEffect(() => {
     processStore.fetchProcesses();
   }, [processStore]);
-
+  console.log("processes", processStore.processes);
   if (isLoading) {
     return (
       <div>
