@@ -36,7 +36,7 @@ const RecentTasks = observer(() => {
     (process) => process.status === "completed"
   );
   console.log("completed tasks:", processes);
-  
+
   return (
     <div>
       <div className="col-span-3">
@@ -46,8 +46,10 @@ const RecentTasks = observer(() => {
             <CardDescription></CardDescription>
           </CardHeader>
           <CardContent className="grid gap-2">
-            {completedTasks.map((task) => (
-              <CompletedTaskCard {...task} />
+            {completedTasks.map((task, index) => (
+              <div key={index}>
+                <CompletedTaskCard {...task} />
+              </div>
             ))}
           </CardContent>
         </Card>

@@ -1,18 +1,26 @@
 "use client";
-import { UserCreationForm } from "@/components/ui/create-users/create-users";
-import React from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import React, { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import ProcessTask from "@/components/ui/process/form/new-process/process-tasks";
+function WithSuspense() {
+  const searchParams = useSearchParams();
+  const processId = searchParams.get("processId");
+
+  return (
+    <div className="flex min-h-svh w-full justify-center p-2 md:p-10">
+      <div className="w-full">
+        <ProcessTask processId={processId as string} />
+      </div>
+    </div>
+  );
+}
+
 function Page() {
   return (
     <div style={{ alignContent: "center" }}>
-      <ProcessTask processId="14r4DWux6TMcTunZotf7" />
+      <Suspense fallback={<div>Loading...</div>}>
+        <WithSuspense />
+      </Suspense>
     </div>
   );
 }

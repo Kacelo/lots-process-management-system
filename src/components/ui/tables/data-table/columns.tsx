@@ -6,8 +6,9 @@ import { TableActions, UserTableActions } from "./table-actions";
 import { User } from "@/app/models/users";
 import { Button } from "../../button";
 import { ArrowUpDown } from "lucide-react";
+import { ProcessInterface } from "@/app/interfaces/interfaces";
 
-export const processColumns: ColumnDef<ProcessType>[] = [
+export const processColumns: ColumnDef<ProcessInterface>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => {
@@ -19,7 +20,7 @@ export const processColumns: ColumnDef<ProcessType>[] = [
           Name
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
   },
   {
@@ -31,17 +32,18 @@ export const processColumns: ColumnDef<ProcessType>[] = [
     header: "Status",
   },
   {
-    accessorKey: "assignee",
+    accessorKey: "dueDate",
     header: ({ column }) => {
+      console.log(column);
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Assignee
+          dueDate
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
   },
   // {
@@ -58,7 +60,7 @@ export const processColumns: ColumnDef<ProcessType>[] = [
         console.error("Missing process ID", process);
         return null;
       }
-      return <TableActions processId={id} />;
+      return <TableActions processId={id as string} />;
     },
   },
 ];
@@ -75,7 +77,7 @@ export const userTableColumns: ColumnDef<User>[] = [
           Email
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
   },
   {

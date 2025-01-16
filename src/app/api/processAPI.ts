@@ -1,5 +1,6 @@
-import { collection, getDocs } from "firebase/firestore";
+import { addDoc, collection, getDocs } from "firebase/firestore";
 import { auth, firestore } from "../../../firebase";
+import { ProcessInterface } from "../interfaces/interfaces";
 // process APi
 export async function fetchAllProcesses() {
   try {
@@ -38,4 +39,28 @@ export async function fetchProcesses() {
     console.error("Error fetching processes:", error);
     throw error;
   }
+}
+
+export async function createNewProcess(processData: ProcessInterface) {  
+  try {
+    if (!processData) {
+        throw new Error("Task data not provided");
+      }
+      if (!processData.name || !processData.description || !processData.status) {
+        throw new Error("Missing required fields in task data");
+      }
+
+      const docRef = await addDoc(collection(firestore, "processes"), {
+        name: processData.name ,
+        description: processData.description,
+        status: processData.status,
+        createdBy: processData.createdBy,
+        dueDate: processData.dueDate,
+      });
+      console.log("Task successfully created with ID:", docRef.id);
+      return docRef.id;
+    } catch (error) {
+      console.error("Error adding new task:", error);
+      throw new Error("Failed to add new task");
+    }
 }
