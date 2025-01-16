@@ -8,6 +8,7 @@ import { ProcessInterface } from "../interfaces/interfaces";
 class ProcessStore {
   processes: ProcessInterface[] = [];
   isLoading = false;
+  focusedProcess?: ProcessInterface;
 
   constructor() {
     makeAutoObservable(this);
@@ -29,8 +30,7 @@ class ProcessStore {
           name: data.name,
           status: data.status,
           createdBy: data.createdBy,
-          dueDate: data.dueDate.toDate().toLocaleDateString()
-          ,
+          dueDate: data.dueDate.toDate().toLocaleDateString(),
         };
       });
       this.processes = processes;
@@ -51,6 +51,20 @@ class ProcessStore {
     } catch (error) {
       console.error("Error adding new process:", error);
       throw error;
+    }
+  }
+  setFocusedProcess(processId: string) {
+    try {
+      this.isLoading = true;
+
+      this.focusedProcess = this.processes.find(
+        (process) => process.id === processId
+      );
+      console.log("setting focused Process:", this.focusedProcess);
+    } catch (error) {
+      console.error("Error fetching processes:", error);
+    } finally {
+      this.isLoading = false;
     }
   }
   /**
