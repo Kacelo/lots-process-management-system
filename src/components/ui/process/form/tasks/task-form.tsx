@@ -126,14 +126,14 @@ export function TaskForm({ focusedProcess }: TaskFormSchema) {
                       </FormItem>
                     )}
                   />
-                  <Button type="submit">Submit</Button>
+                  <Button type="submit">Save</Button>
                   <Button>Add new task</Button>
                 </form>
               </Form>
             </div>
           </div>
           <div className="aspect-video rounded-xl bg-muted/50 w-3/4">
-            <TaskEditForm focusedTask={focusedTask} focusedProcess={focusedProcess as ProcessInterface} />
+            {focusedTask && <TaskEditForm focusedTask={focusedTask} focusedProcess={focusedProcess as ProcessInterface} />}
           </div>
         </div>
       </div>
