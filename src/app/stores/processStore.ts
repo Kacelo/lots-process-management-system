@@ -1,7 +1,7 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { collection, getDocs } from "firebase/firestore";
 import { firestore } from "../../../firebase";
-import { createNewProcess, fetchProcesses } from "../api/processAPI";
+import { createNewProcess, fetchProcesses, fetchUserTasks } from "../api/processAPI";
 import { ProcessType } from "../models/processes";
 import { ProcessInterface } from "../interfaces/interfaces";
 
@@ -66,6 +66,11 @@ class ProcessStore {
     } finally {
       this.isLoading = false;
     }
+  }
+  async userTasks(userEmail: string) {
+    try {
+      const tasks = await fetchUserTasks(userEmail);
+    } catch (error) {}
   }
   /**
    * Filters processes by a specific criterion (e.g., assignee or status).

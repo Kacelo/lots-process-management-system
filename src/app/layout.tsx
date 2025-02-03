@@ -4,6 +4,7 @@ import "./globals.css";
 import { RootStateProvider } from "./stores/RootStateContext";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
+import { NavBar } from "@/components/ui/navbar/navbar";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -41,6 +42,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
+            <NavBar />
             {children}
             <Toaster />
           </ThemeProvider>{" "}

@@ -9,37 +9,45 @@ import {
 import { TaskSchema } from "../interfaces/interfaces";
 export class TaskStore {
   tasks: any; // Task state
-  isLoading: boolean = false;
+  isLoading = false;
+  userTasks: any;
   constructor() {
     makeAutoObservable(this);
   }
 
   // Load all tasks from Firestore
   async loadTasks(processId: string) {
-    this.isLoading = true;
+    // this.isLoading = true;
     try {
       const taskCollection = await fetchAllProcessTasks(processId);
       console.log("processes:", taskCollection);
       runInAction(() => {
-        this.tasks = taskCollection; // Update the tasks state
-        this.isLoading = false;
+        if (this.tasks) {
+          this.tasks = taskCollection; // Update the tasks state
+          this.isLoading = false;
+        }
       });
     } catch (error) {
       console.error("Error loading tasks:", error);
     }
   }
   async fetchUserTask() {
-    this.isLoading = true;
+    // this.isLoading = true;
     try {
       const fetchedTasks = await fetchUserTasks();
       runInAction(() => {
-        this.tasks = fetchedTasks; // Update the tasks state
-        this.isLoading = false;
+        if (this.userTasks) {
+          this.userTasks = fetchedTasks; // Update the tasks state
+          this.isLoading = false;
+        }
       });
+      console.log(fetchedTasks);
     } catch (error) {
       console.error("Error fetching user tasks:", error);
       runInAction(() => {
-        this.isLoading = false;
+        if (this.isLoading) {
+          this.isLoading = false;
+        }
       });
     }
   }
