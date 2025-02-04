@@ -74,7 +74,6 @@ export function DataTable<TData, TValue>({
       });
     }
   };
-  console.log("all columns:", table.getAllColumns());
   // const emailColumn = table?.getColumn("email");
   // const nameColumn = table.getColumn("name");
 

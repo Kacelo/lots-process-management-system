@@ -39,6 +39,8 @@ import { ProcessType } from "@/app/models/processes";
 import { Textarea } from "@/components/ui/textarea";
 import { Timestamp } from "firebase/firestore";
 import { ProcessInterface, TaskSchema } from "@/app/interfaces/interfaces";
+import { ProcessTaskList } from "./task-list";
+import { useToast } from "@/hooks/use-toast";
 const formSchema = z.object({
   taskname: z.string().min(2, {
     message: "Username must be at least 2 characters.",
@@ -67,7 +69,7 @@ const taskFormSchema = z.object({
 //   taskIndex: number;
 // }
 interface TaskFormSchema {
-  focusedProcess: ProcessInterface| undefined;
+  focusedProcess: ProcessInterface | undefined;
 }
 interface TaskUpdateSchema {
   focusedTask: string;
@@ -77,6 +79,14 @@ export function TaskForm({ focusedProcess }: TaskFormSchema) {
   const [focusedTask, setFocusedTask] = useState("");
   const { taskStore } = useRootStore();
 
+  const { fetchUserTask, tasks, userTasks, loadTasks } = taskStore;
+  console.log("focusedProcess:", focusedProcess);
+
+  //   const { authStore } = useRootStore();
+  useEffect(() => {
+    // fetchUserTask();
+    // loadTasks(focusedProcess?.id);
+  });
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -89,7 +99,7 @@ export function TaskForm({ focusedProcess }: TaskFormSchema) {
     setFocusedTask(values.taskname);
     // set taskname, createdBy, taskIndex, processId
   }
-
+  console.log(focusedProcess);
   return (
     <div>
       <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
@@ -107,11 +117,15 @@ export function TaskForm({ focusedProcess }: TaskFormSchema) {
                 Task List
               </h2>
               <Separator />
-
+              {focusedProcess ? (
+                <ProcessTaskList processId={focusedProcess?.id as string} />
+              ) : (
+                <p>No process found for the given ID.</p>
+              )}
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-8"
+                  className="space-y-8 space-x-1"
                 >
                   <FormField
                     control={form.control}
@@ -133,7 +147,12 @@ export function TaskForm({ focusedProcess }: TaskFormSchema) {
             </div>
           </div>
           <div className="aspect-video rounded-xl bg-muted/50 w-3/4">
-            {focusedTask && <TaskEditForm focusedTask={focusedTask} focusedProcess={focusedProcess as ProcessInterface} />}
+            {focusedTask && (
+              <TaskEditForm
+                focusedTask={focusedTask}
+                focusedProcess={focusedProcess as ProcessInterface}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -143,12 +162,20 @@ export function TaskForm({ focusedProcess }: TaskFormSchema) {
 
 const TaskEditForm = ({ focusedTask, focusedProcess }: TaskUpdateSchema) => {
   const { userStore, taskStore } = useRootStore();
-  const {addNewTask} = taskStore
+  const { addNewTask, tasks } = taskStore;
+  const { toast } = useToast();
+  const handleToast = (message: string, description: string) => {
+    toast({
+      title: message,
+      description: description,
+    });
+    // authStore.logOut()
+  };
   useEffect(() => {
     userStore.fetchUsers();
     taskStore.loadTasks("d4qNatMSpwEa9mVxJJbP");
   }, [userStore, taskStore]);
-
+  // console.log(tasks);
   const { users } = userStore;
   const userOptions =
     users?.map((user) => ({
@@ -167,46 +194,55 @@ const TaskEditForm = ({ focusedTask, focusedProcess }: TaskUpdateSchema) => {
     description: "",
     status: "not-started",
     processId: focusedProcess?.id as string,
-    createdBy: focusedProcess?.createdBy
-  }
+    createdBy: focusedProcess?.createdBy,
+  };
   async function onSubmit(values: z.infer<typeof taskFormSchema>) {
     console.log("submitted values:", values);
-  try {
-    // Show toast notification
-    // toast({
-    //   title: "You submitted the following values:",
-    //   description: (
-    //     <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-    //       <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-    //     </pre>
-    //   ),
-    // });
+    try {
+      // Show toast notification
+      // toast({
+      //   title: "You submitted the following values:",
+      //   description: (
+      //     <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+      //       <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+      //     </pre>
+      //   ),
+      // });
 
-    // Prepare process details
-    const newTaskDetails = {
-      ...defaultTaskDetails,
-      assigneeId: values.assigneeId,
-      description: values.description,
-      dueDate: Timestamp.fromDate(values.dueDate),
-    };
+      // Prepare process details
+      const newTaskDetails = {
+        ...defaultTaskDetails,
+        assigneeId: values.assigneeId,
+        description: values.description,
+        dueDate: Timestamp.fromDate(values.dueDate),
+      };
 
-    // Call async function to create a new process
-    const newProcess = await taskStore.addNewTask(newTaskDetails);
+      // Call async function to create a new process
+      const newProcess = await taskStore
+        .addNewTask(newTaskDetails)
+        .then((userCredential) => {
+          handleToast("Welcome back", userCredential.taskname);
+        });
 
-    if (newProcess) {
-      // setProcessId(newProcess);
-      console.log("New process created:", newProcess);
-    } else {
-      console.error("Failed to create a new process.");
+      // if (newProcess) {
+      //   // setProcessId(newProcess);
+      //   console.log("New process created:", newProcess);
+      //   toast({
+      //     title: "Error",
+      //     description: "There was an issue creating the process.",
+      //     // status: "error",
+      //   });
+      // } else {
+      //   console.error("Failed to create a new process.");
+      // }
+    } catch (error) {
+      console.error("Error while submitting form:", error);
+      // toast({
+      //   title: "Error",
+      //   description: "There was an issue creating the process.",
+      //   // status: "error",
+      // });
     }
-  } catch (error) {
-    console.error("Error while submitting form:", error);
-    // toast({
-    //   title: "Error",
-    //   description: "There was an issue creating the process.",
-    //   // status: "error",
-    // });
-  }
     // set assigneeId, dueDate, description,status
     // Timestamp.fromDate(new Date("2025-01-15T15:00:00Z"))
   }
@@ -252,7 +288,7 @@ const TaskEditForm = ({ focusedTask, focusedProcess }: TaskUpdateSchema) => {
                       <Command>
                         <CommandInput placeholder="Search email..." />
                         <CommandList>
-                          <CommandEmpty>No language found.</CommandEmpty>
+                          <CommandEmpty>No emails found.</CommandEmpty>
                           <CommandGroup>
                             {userOptions.map((user) => (
                               <CommandItem
@@ -346,6 +382,4 @@ const TaskEditForm = ({ focusedTask, focusedProcess }: TaskUpdateSchema) => {
   );
 };
 
-const SavedTaskView = ({savedTask}: TaskSchema) =>{
-
-}
+// const SavedTaskView = ({ savedTask }: TaskSchema) => {};

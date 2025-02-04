@@ -8,7 +8,7 @@ import { Button } from "../../button";
 import { ArrowUpDown } from "lucide-react";
 import { ProcessInterface } from "@/app/interfaces/interfaces";
 
-export const processColumns: ColumnDef<ProcessInterface>[] = [
+export const processColumns: ColumnDef<any>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => {

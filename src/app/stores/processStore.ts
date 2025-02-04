@@ -1,7 +1,11 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { collection, getDocs } from "firebase/firestore";
 import { firestore } from "../../../firebase";
-import { createNewProcess, fetchProcesses, fetchUserTasks } from "../api/processAPI";
+import {
+  createNewProcess,
+  fetchProcesses,
+  fetchUserTasks,
+} from "../api/processAPI";
 import { ProcessType } from "../models/processes";
 import { ProcessInterface } from "../interfaces/interfaces";
 
@@ -22,18 +26,19 @@ class ProcessStore {
     this.isLoading = true;
     try {
       const fetchedProcesses = await fetchProcesses();
-      const processes = fetchedProcesses.docs.map((doc) => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          description: data.description,
-          name: data.name,
-          status: data.status,
-          createdBy: data.createdBy,
-          dueDate: data.dueDate.toDate().toLocaleDateString(),
-        };
-      });
-      this.processes = processes;
+      console.log(fetchedProcesses);
+      // const processes = fetchedProcesses?.map((doc) => {
+      //   const data = doc.data();
+      //   return {
+      //     id: doc.id,
+      //     description: data.description,
+      //     name: data.name,
+      //     status: data.status,
+      //     createdBy: data.createdBy,
+      //     dueDate: data.dueDate.toDate().toLocaleDateString(),
+      //   };
+      // });
+      this.processes = fetchedProcesses as ProcessInterface[];
     } catch (error) {
       console.error("Error fetching processes:", error);
     } finally {
@@ -54,6 +59,8 @@ class ProcessStore {
     }
   }
   setFocusedProcess(processId: string) {
+    console.log("focused");
+
     try {
       this.isLoading = true;
 

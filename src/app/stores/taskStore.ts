@@ -4,15 +4,28 @@ import { firestore } from "../../../firebase";
 import {
   addNewTask,
   fetchAllProcessTasks,
+  fetchTasks,
   fetchUserTasks,
 } from "../api/taskAPI";
 import { TaskSchema } from "../interfaces/interfaces";
 export class TaskStore {
-  tasks: any; // Task state
+  tasks: TaskSchema[] = []; // Task state
   isLoading = false;
   userTasks: any;
+  processTasks?: TaskSchema[];
   constructor() {
     makeAutoObservable(this);
+  }
+  async fetchTasks() {
+    this.isLoading = true;
+    try {
+      const fetchedTasks = await fetchTasks();
+      this.tasks = fetchedTasks as TaskSchema[];
+    } catch (error) {
+      console.error("Error fetching processes:", error);
+    } finally {
+      this.isLoading = false;
+    }
   }
 
   // Load all tasks from Firestore
@@ -20,12 +33,24 @@ export class TaskStore {
     // this.isLoading = true;
     try {
       const taskCollection = await fetchAllProcessTasks(processId);
-      console.log("processes:", taskCollection);
-      runInAction(() => {
-        if (this.tasks) {
+      console.log("taskCollection:", taskCollection);
+      if (!this.tasks) {
+        return;
+      } else {
+        runInAction(() => {
           this.tasks = taskCollection; // Update the tasks state
           this.isLoading = false;
-        }
+        });
+      }
+    } catch (error) {
+      console.error("Error loading tasks:", error);
+    }
+  }
+  async setProcessTasks(processId: string) {
+    try {
+      const fetchedTasks = await fetchAllProcessTasks(processId);
+      runInAction(() => {
+        this.processTasks = fetchedTasks;
       });
     } catch (error) {
       console.error("Error loading tasks:", error);
@@ -39,16 +64,18 @@ export class TaskStore {
         if (this.userTasks) {
           this.userTasks = fetchedTasks; // Update the tasks state
           this.isLoading = false;
+        } else {
+          throw new Error("Loading state undefined");
         }
       });
-      console.log(fetchedTasks);
+      // console.log(fetchedTasks, Hs1r6bSZojG9TOonX51X);
     } catch (error) {
       console.error("Error fetching user tasks:", error);
-      runInAction(() => {
-        if (this.isLoading) {
-          this.isLoading = false;
-        }
-      });
+      // runInAction(() => {
+      //   if (this.isLoading) {
+      //     this.isLoading = false;
+      //   }
+      // });
     }
   }
   // Add a new task

@@ -2,6 +2,7 @@ import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { auth, firestore } from "../../../firebase";
 import { ProcessInterface } from "../interfaces/interfaces";
 import { ProcessType } from "../models/processes";
+import { fetchData } from "./helper-functions/fetch-data";
 // process APi
 export async function fetchAllProcesses() {
   try {
@@ -32,10 +33,8 @@ export async function fetchAllProcesses() {
 
 export async function fetchProcesses() {
   try {
-    const processesCollection = collection(firestore, "processes");
-    const querySnapshot = await getDocs(processesCollection);
-
-    return querySnapshot;
+    const processes = await fetchData("processes");
+    return processes;
   } catch (error) {
     console.error("Error fetching processes:", error);
     throw error;

@@ -1,15 +1,11 @@
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { auth, firestore } from "../../../firebase";
 import { TaskSchema } from "../interfaces/interfaces";
+import { fetchData } from "./helper-functions/fetch-data";
 
 export async function fetchTasks() {
   try {
-    const taskQuery = query(collection(firestore, "tasks"));
-    const querySnapshot = await getDocs(taskQuery);
-    const tasks = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    const tasks = await fetchData("tasks");
     return tasks;
   } catch (error) {
     console.error("Error fetching tasks:", error);
@@ -41,19 +37,21 @@ export async function fetchUserTasks() {
   }
 }
 export async function fetchAllProcessTasks(processId: string) {
+  console.log("lets see the ID", processId);
   try {
     if (!processId) {
-      throw new Error("User is unauthenticated");
+      throw new Error("processId is unauthenticated");
     }
     // const taskCollection = collection(firestore, `tasks/${}`)
-    const taskQuery = query(
-      collection(firestore, "tasks"),
-      where("processId", "==", processId)
+    console.log("lets see the ID", processId);
+    const taskCollection = collection(firestore, "tasks");
+    const querySnapshot = await getDocs(
+      query(taskCollection, where("proceessId", "==", processId))
     );
-    const querySnapshot = await getDocs(taskQuery);
-    const tasks = querySnapshot.docs.map((doc) => ({
+    // const querySnapshot = await getDocs(taskQuery);
+    const tasks: TaskSchema[] = querySnapshot.docs.map((doc) => ({
       id: doc.id,
-      ...doc.data(),
+      ...(doc.data() as Omit<TaskSchema, "id">),
     }));
     return tasks;
   } catch (error) {

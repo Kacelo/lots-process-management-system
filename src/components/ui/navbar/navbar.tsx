@@ -12,16 +12,6 @@ export const NavBar = observer(() => {
   const { user, fetchUserData } = authStore;
   // const {fetchAllProcesses} = processStore;
   // fetchUserData()
-  console.log("processes:", user   );
-  useEffect(() => {
-    // Fetch all processes when the component mounts
-    fetchData();
-  }, [processStore]);
-  async function fetchData() {
-    // You can await here
-    // console.log("processes:", await fetchAllProcesses())
-    // ...
-  }
   return (
     <div className="fixed top-12 left-0 w-full flex items-center justify-center">
       <div className="flex items-center py-1 px-2">

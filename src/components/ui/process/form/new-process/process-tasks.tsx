@@ -10,7 +10,7 @@ interface TaskProps {
 }
 const ProcessTask = observer(({ processId }: TaskProps) => {
   const { processStore } = useRootStore();
-  const { isLoading, focusedProcess, setFocusedProcess } = processStore;
+  const { isLoading, focusedProcess } = processStore;
 
   useEffect(() => {
     // Ensure processes are fetched and the focused process is set
@@ -18,8 +18,8 @@ const ProcessTask = observer(({ processId }: TaskProps) => {
       processStore.setFocusedProcess(processId);
     });
   }, [processStore, processId]);
-  console.log(focusedProcess, processId);
-  if (isLoading) {
+  console.log(processId);
+  if (isLoading && focusedProcess) {
     return <div>Loading...</div>;
   }
 
