@@ -8,11 +8,12 @@ import {
   fetchUserTasks,
 } from "../api/taskAPI";
 import { TaskSchema } from "../interfaces/interfaces";
+import { fetchDataById } from "../api/helper-functions/fetch-data";
 export class TaskStore {
   tasks: TaskSchema[] = []; // Task state
   isLoading = false;
   userTasks: any;
-  processTasks?: TaskSchema[];
+  processTasks: TaskSchema[] = [];
   constructor() {
     makeAutoObservable(this);
   }
@@ -27,28 +28,27 @@ export class TaskStore {
       this.isLoading = false;
     }
   }
-
+  
   // Load all tasks from Firestore
   async loadTasks(processId: string) {
     // this.isLoading = true;
     try {
-      const taskCollection = await fetchAllProcessTasks(processId);
+      const taskCollection = await fetchDataById(processId, "tasks", "processId") as TaskSchema[];
       console.log("taskCollection:", taskCollection);
-      if (!this.tasks) {
-        return;
-      } else {
         runInAction(() => {
           this.tasks = taskCollection; // Update the tasks state
           this.isLoading = false;
         });
-      }
     } catch (error) {
       console.error("Error loading tasks:", error);
     }
   }
   async setProcessTasks(processId: string) {
     try {
-      const fetchedTasks = await fetchAllProcessTasks(processId);
+      const fetchedTasks = await fetchDataById(processId, "tasks", "processId") as TaskSchema[];
+      if (fetchedTasks.length === 0) {
+        console.warn(`No tasks found for processId: ${processId}`);
+      }
       runInAction(() => {
         this.processTasks = fetchedTasks;
       });

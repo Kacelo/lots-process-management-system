@@ -79,14 +79,16 @@ export function TaskForm({ focusedProcess }: TaskFormSchema) {
   const [focusedTask, setFocusedTask] = useState("");
   const { taskStore } = useRootStore();
 
-  const { fetchUserTask, tasks, userTasks, loadTasks } = taskStore;
-  console.log("focusedProcess:", focusedProcess);
+  const { fetchUserTask, tasks, userTasks, loadTasks, processTasks } =
+    taskStore;
 
   //   const { authStore } = useRootStore();
   useEffect(() => {
     // fetchUserTask();
-    // loadTasks(focusedProcess?.id);
-  });
+    taskStore.setProcessTasks(focusedProcess?.id as string);
+    console.log("focusedProcess:", processTasks);
+
+  }, [taskStore]);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -116,6 +118,11 @@ export function TaskForm({ focusedProcess }: TaskFormSchema) {
               <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
                 Task List
               </h2>
+              <>
+                {processTasks.map((doc) => {
+                  <p>{doc.description}</p>;
+                })}
+              </>
               <Separator />
               {focusedProcess ? (
                 <ProcessTaskList processId={focusedProcess?.id as string} />
