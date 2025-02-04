@@ -43,6 +43,7 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
+  console.log(emailCol)
 
   const table = useReactTable({
     data,
@@ -85,13 +86,13 @@ export function DataTable<TData, TValue>({
     // console.error("No valid column for filtering.");
     return <div>No columns available for filtering.</div>;
   }
-  console.log(table.getAllColumns());
+  console.log(emailCol)
   return (
     <div>
       <div>
         <div className="flex items-center py-4">
           <Input
-            placeholder={`Filter ${emailCol ? "emails" : "names"}...`}
+            placeholder={`Filter ${emailCol.id}'s...`}
             value={(emailCol?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
               emailCol?.setFilterValue(event.target.value)
