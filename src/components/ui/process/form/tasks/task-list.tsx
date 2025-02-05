@@ -1,31 +1,44 @@
 import { useRootStore } from "@/app/stores/RootStateContext";
+import { Button } from "@/components/ui/button";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
-interface TaskProps {
-  processId: string;
-}
-export const ProcessTaskList = observer(({ processId }: TaskProps) => {
-  const { taskStore } = useRootStore();
-  useEffect(() => {
-    taskStore.setProcessTasks(processId);
-  }, [taskStore, processId]);
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { TaskSchema } from "@/app/interfaces/interfaces";
+export const ProcessTaskList = observer(
+  ({ processTasks }: { processTasks: TaskSchema[] }) => {
 
-  // Log when processTasks updates
-  useEffect(() => {
-    console.log("processTasks updated:", taskStore.processTasks);
-  }, [taskStore.processTasks]);
-  console.log("processTasks:", taskStore.processTasks);
-  return (
-    <>
-      Hello
-      {processId}
-      {/* {taskStore?.processTasks.length > 0 ? (
-        taskStore?.processTasks.map((task) => (
-          <div key={task.id}>{task.taskname}</div>
-        ))
-      ) : (
-        <p>No tasks available</p>
-      )} */}
-    </>
-  );
-});
+    const { taskStore } = useRootStore();
+    console.log(taskStore.processTasks.length)
+    return (
+      <>
+        {/* <Button onClick={fetchMyTasks}>fetch data</Button> */}
+        <Table>
+          <TableCaption>A list of your recent Tasks.</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[100px]">Tasks</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {/* {processTasks.length > 0 ? ( */}
+            {taskStore.processTasks?.map((task) => (
+              // <div key={task.id}>{task.taskname}</div>
+              <TableRow key={task.id}>
+                <TableCell className="font-medium">{task.taskname}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+
+      </>
+    );
+  }
+);

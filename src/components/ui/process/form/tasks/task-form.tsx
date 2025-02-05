@@ -56,18 +56,6 @@ const taskFormSchema = z.object({
   }),
 });
 
-// interface TaskSchema {
-//   taskname: string;
-//   description: string;
-//   processId: string;
-//   status: string;
-//   assigneeId: string;
-//   createdBy: string;
-//   dueDate: string;
-//   completedAt: string;
-//   isArchived: string;
-//   taskIndex: number;
-// }
 interface TaskFormSchema {
   focusedProcess: ProcessInterface | undefined;
 }
@@ -75,20 +63,19 @@ interface TaskUpdateSchema {
   focusedTask: string;
   focusedProcess: ProcessInterface;
 }
-export function TaskForm({ focusedProcess }: TaskFormSchema) {
+
+export const TaskForm = observer(({ focusedProcess }: TaskFormSchema) => {
   const [focusedTask, setFocusedTask] = useState("");
   const { taskStore } = useRootStore();
 
-  const { fetchUserTask, tasks, userTasks, loadTasks, processTasks } =
-    taskStore;
+  const { processTasks } = taskStore;
 
-  //   const { authStore } = useRootStore();
   useEffect(() => {
-    // fetchUserTask();
-    taskStore.setProcessTasks(focusedProcess?.id as string);
-    console.log("focusedProcess:", processTasks);
+    if (focusedProcess?.id) {
+      taskStore.setProcessTasks(focusedProcess.id);
+    }
+  }, [focusedProcess]); // No need to include `taskStore`, since it’s already reactive
 
-  }, [taskStore]);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -96,78 +83,70 @@ export function TaskForm({ focusedProcess }: TaskFormSchema) {
     },
   });
 
+  console.log("Tasks have been updated:", processTasks);
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
     setFocusedTask(values.taskname);
-    // set taskname, createdBy, taskIndex, processId
+    // Handle form submission
   }
-  console.log(focusedProcess);
+
   return (
     <div>
-      <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+      <div className="flex flex-col gap-4 p-4">
         {focusedProcess ? (
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-            {focusedProcess.name}
-          </h1>
+          <h1 className="text-4xl font-extrabold tracking-tight">{focusedProcess.name}</h1>
         ) : (
           <p>No process found for the given ID.</p>
         )}
-        <div className="flex gap-4 md:grid-cols-2">
-          <div className="aspect-video rounded-xl bg-muted/50 w-1/4">
-            <div className="p-[25px]">
-              <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
-                Task List
-              </h2>
-              <>
-                {processTasks.map((doc) => {
-                  <p>{doc.description}</p>;
-                })}
-              </>
-              <Separator />
-              {focusedProcess ? (
-                <ProcessTaskList processId={focusedProcess?.id as string} />
-              ) : (
-                <p>No process found for the given ID.</p>
-              )}
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-8 space-x-1"
-                >
-                  <FormField
-                    control={form.control}
-                    name="taskname"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Task</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Type task name here" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+
+        <div className="flex flex-col md:flex-row gap-4">
+          {/* Left Column */}
+          <div className="w-full md:w-1/3 bg-muted/50 rounded-xl p-4">
+            {/* Task List */}
+            {processTasks.length > 0 ? (
+              <ProcessTaskList processTasks={processTasks} />
+            ) : (
+              <p>No tasks available.</p>
+            )}
+            <Separator />
+
+            {/* Task Form */}
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="taskname"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input placeholder="Type task name here" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="flex gap-2">
                   <Button type="submit">Save</Button>
                   <Button>Add new task</Button>
-                </form>
-              </Form>
-            </div>
+                </div>
+              </form>
+            </Form>
           </div>
-          <div className="aspect-video rounded-xl bg-muted/50 w-3/4">
+
+          {/* Right Column */}
+          <div className="w-full md:w-2/3 bg-muted/50 rounded-xl p-4">
             {focusedTask && (
-              <TaskEditForm
-                focusedTask={focusedTask}
-                focusedProcess={focusedProcess as ProcessInterface}
-              />
+              <TaskEditForm focusedTask={focusedTask} focusedProcess={focusedProcess as ProcessInterface} />
             )}
           </div>
         </div>
       </div>
     </div>
   );
-}
+});
 
-const TaskEditForm = ({ focusedTask, focusedProcess }: TaskUpdateSchema) => {
+const TaskEditForm = observer(({ focusedTask, focusedProcess }: TaskUpdateSchema) => {
   const { userStore, taskStore } = useRootStore();
   const { addNewTask, tasks } = taskStore;
   const { toast } = useToast();
@@ -178,10 +157,11 @@ const TaskEditForm = ({ focusedTask, focusedProcess }: TaskUpdateSchema) => {
     });
     // authStore.logOut()
   };
+  // console.log("tasks:", tasks);
   useEffect(() => {
     userStore.fetchUsers();
-    taskStore.loadTasks("d4qNatMSpwEa9mVxJJbP");
-  }, [userStore, taskStore]);
+    // taskStore.loadTasks("d4qNatMSpwEa9mVxJJbP");
+  }, [userStore]);
   // console.log(tasks);
   const { users } = userStore;
   const userOptions =
@@ -228,27 +208,10 @@ const TaskEditForm = ({ focusedTask, focusedProcess }: TaskUpdateSchema) => {
       const newProcess = await taskStore
         .addNewTask(newTaskDetails)
         .then((userCredential) => {
-          handleToast("Welcome back", userCredential.taskname);
+          handleToast("New Task Created!", userCredential.taskname);
         });
-
-      // if (newProcess) {
-      //   // setProcessId(newProcess);
-      //   console.log("New process created:", newProcess);
-      //   toast({
-      //     title: "Error",
-      //     description: "There was an issue creating the process.",
-      //     // status: "error",
-      //   });
-      // } else {
-      //   console.error("Failed to create a new process.");
-      // }
     } catch (error) {
       console.error("Error while submitting form:", error);
-      // toast({
-      //   title: "Error",
-      //   description: "There was an issue creating the process.",
-      //   // status: "error",
-      // });
     }
     // set assigneeId, dueDate, description,status
     // Timestamp.fromDate(new Date("2025-01-15T15:00:00Z"))
@@ -387,6 +350,6 @@ const TaskEditForm = ({ focusedTask, focusedProcess }: TaskUpdateSchema) => {
       </Form>
     </div>
   );
-};
+});
 
 // const SavedTaskView = ({ savedTask }: TaskSchema) => {};

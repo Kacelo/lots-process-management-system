@@ -1,4 +1,4 @@
-import { makeAutoObservable, runInAction, reaction } from "mobx";
+import { makeAutoObservable, runInAction, reaction, action } from "mobx";
 import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 import { firestore } from "../../../firebase";
 import {
@@ -17,7 +17,7 @@ export class TaskStore {
   constructor() {
     makeAutoObservable(this);
   }
-  async fetchTasks() {
+  @action async fetchTasks() {
     this.isLoading = true;
     try {
       const fetchedTasks = await fetchTasks();
@@ -28,24 +28,33 @@ export class TaskStore {
       this.isLoading = false;
     }
   }
-  
+
   // Load all tasks from Firestore
   async loadTasks(processId: string) {
     // this.isLoading = true;
     try {
-      const taskCollection = await fetchDataById(processId, "tasks", "processId") as TaskSchema[];
+      const taskCollection = (await fetchDataById(
+        processId,
+        "tasks",
+        "processId"
+      )) as TaskSchema[];
       console.log("taskCollection:", taskCollection);
-        runInAction(() => {
-          this.tasks = taskCollection; // Update the tasks state
-          this.isLoading = false;
-        });
+      runInAction(() => {
+        this.tasks = taskCollection; // Update the tasks state
+        this.isLoading = false;
+      });
     } catch (error) {
       console.error("Error loading tasks:", error);
     }
   }
-  async setProcessTasks(processId: string) {
+  @action async setProcessTasks(processId: string) {
+    console.log("process ID:", processId);
     try {
-      const fetchedTasks = await fetchDataById(processId, "tasks", "processId") as TaskSchema[];
+      const fetchedTasks = (await fetchDataById(
+        processId,
+        "tasks",
+        "processId"
+      )) as TaskSchema[];
       if (fetchedTasks.length === 0) {
         console.warn(`No tasks found for processId: ${processId}`);
       }
@@ -79,7 +88,7 @@ export class TaskStore {
     }
   }
   // Add a new task
-  async addNewTask(taskData: TaskSchema) {
+ @action async addNewTask(taskData: TaskSchema) {
     try {
       const newTaskId = await addNewTask(taskData);
       const newTask: TaskSchema = { ...taskData, id: newTaskId }; // Assume `id` is added to the task

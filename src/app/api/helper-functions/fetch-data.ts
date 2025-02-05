@@ -67,6 +67,7 @@ export async function fetchDataById(
         console.warn(`Unknown collection: ${collectionName}`);
         return [];
     }
+
     return documents;
   } catch (error) {
     console.error("Error fetching processes:", error);

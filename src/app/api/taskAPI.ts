@@ -46,7 +46,7 @@ export async function fetchAllProcessTasks(processId: string) {
     console.log("lets see the ID", processId);
     const taskCollection = collection(firestore, "tasks");
     const querySnapshot = await getDocs(
-      query(taskCollection, where("proceessId", "==", processId))
+      query(taskCollection, where("processId", "==", processId))
     );
     // const querySnapshot = await getDocs(taskQuery);
     const tasks: TaskSchema[] = querySnapshot.docs.map((doc) => ({
@@ -83,6 +83,8 @@ export async function addNewTask(taskData: TaskSchema) {
       taskIndex: taskData.taskIndex ?? null,
     });
     console.log("Task successfully created with ID:", docRef.id);
+    taskStore.processTasks.push({ id: newTaskId, ...newTask });
+
     return docRef.id;
   } catch (error) {
     console.error("Error adding new task:", error);
