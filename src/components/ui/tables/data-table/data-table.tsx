@@ -10,6 +10,8 @@ import {
   getSortedRowModel,
   ColumnFiltersState,
   getFilteredRowModel,
+  Column,
+  Table as reactTable,
 } from "@tanstack/react-table";
 
 import {
@@ -23,7 +25,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-import React from "react";
+import React, { useEffect } from "react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -35,9 +37,14 @@ export function DataTable<TData, TValue>({
   data,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [emailCol, setEmailCol] = React.useState<
+    Column<TData, unknown> | undefined
+  >();
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
+  console.log(emailCol)
+
   const table = useReactTable({
     data,
     columns,
@@ -52,27 +59,43 @@ export function DataTable<TData, TValue>({
       columnFilters,
     },
   });
-  const emailColumn = table?.getColumn("email");
-const nameColumn = table.getColumn("name");
+  useEffect(() => {
+    handleColumnSet(table)
+    // return () => {};
+  }, [table]);
+  const handleColumnSet = (table: reactTable<TData>) => {
+    if (table) {
+      const columns = table.getAllColumns();
+      columns.map((column) => {
+        if (column.id === "email") {
+          setEmailCol(column);
+        } else if (column.id === "name") {
+          setEmailCol(column);
+        }
+      });
+    }
+  };
+  // const emailColumn = table?.getColumn("email");
+  // const nameColumn = table.getColumn("name");
 
-// Determine the active column for filtering
-const filterColumn = emailColumn ?? nameColumn;
+  // // Determine the active column for filtering
+  // const filterColumn = emailColumn ?? nameColumn;
 
-// Check if a valid filter column exists
-if (!filterColumn) {
-  console.error("No valid column for filtering.");
-  return <div>No columns available for filtering.</div>;
-}
-  console.log(table.getAllColumns());
+  // Check if a valid filter column exists
+  if (!emailCol) {
+    // console.error("No valid column for filtering.");
+    return <div>No columns available for filtering.</div>;
+  }
+  console.log(emailCol)
   return (
     <div>
       <div>
         <div className="flex items-center py-4">
           <Input
-        placeholder={`Filter ${emailColumn ? "emails" : "names"}...`}
-        value={(filterColumn?.getFilterValue() as string) ?? ""}
+            placeholder={`Filter ${emailCol.id}'s...`}
+            value={(emailCol?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
-              filterColumn?.setFilterValue(event.target.value)
+              emailCol?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
           />

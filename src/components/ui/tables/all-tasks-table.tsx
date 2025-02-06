@@ -8,12 +8,13 @@ import { DataTable } from "./data-table/data-table";
 import { processColumns } from "./data-table/columns";
 
 export const AllProcessTable = observer(() => {
-  const { processStore } = useRootStore();
+  const { processStore, taskStore } = useRootStore();
   const { isLoading } = processStore;
   useEffect(() => {
     processStore.fetchProcesses();
-  }, [processStore]);
-  console.log("processes", processStore.processes);
+    taskStore.fetchTasks();
+  }, [processStore, taskStore]);
+  console.log("processes", processStore.processes, taskStore.tasks);
   if (isLoading) {
     return (
       <div>

@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { action, makeAutoObservable } from "mobx";
 import { User as FirebaseUser } from "firebase/auth";
 import { fetchUserData, initAuthListener, logOut } from "../api/authAPI";
 
@@ -9,9 +9,9 @@ class AuthStore {
 
   constructor() {
     makeAutoObservable(this);
-    this.initAuthListener();
+    // this.initAuthListener();
   }
-fetchUserData() {
+@action fetchUserData() {
   if (this.user?.uid) { // Ensure that a user is logged in and has a UID
     fetchUserData(this.user.uid)
       .then((userData) => {
@@ -24,7 +24,7 @@ fetchUserData() {
     console.error("User UID is not available.");
   }
 }
-  initAuthListener() {
+@action initAuthListener() {
     initAuthListener(
       (firebaseUser, userData) => {
         this.user = firebaseUser;

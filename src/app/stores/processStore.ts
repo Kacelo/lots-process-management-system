@@ -1,8 +1,9 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { collection, getDocs } from "firebase/firestore";
-import { firestore } from "../../../firebase";
-import { createNewProcess, fetchProcesses } from "../api/processAPI";
-import { ProcessType } from "../models/processes";
+import {
+  createNewProcess,
+  fetchProcesses,
+  fetchUserTasks,
+} from "../api/processAPI";
 import { ProcessInterface } from "../interfaces/interfaces";
 
 class ProcessStore {
@@ -21,19 +22,19 @@ class ProcessStore {
   async fetchProcesses() {
     this.isLoading = true;
     try {
-      const fetchedProcesses = await fetchProcesses();
-      const processes = fetchedProcesses.docs.map((doc) => {
-        const data = doc.data();
+      const fetchedProcesses = await fetchProcesses() as ProcessInterface[];
+      console.log(fetchedProcesses);
+      const formatedProcesses = fetchedProcesses?.map((process) => {
         return {
-          id: doc.id,
-          description: data.description,
-          name: data.name,
-          status: data.status,
-          createdBy: data.createdBy,
-          dueDate: data.dueDate.toDate().toLocaleDateString(),
+          id: process.id,
+          description: process.description,
+          name: process.name,
+          status: process.status,
+          createdBy: process.createdBy,
+          dueDate: process.dueDate?.toDate().toLocaleDateString(),
         };
-      });
-      this.processes = processes;
+      })
+      this.processes = formatedProcesses as ProcessInterface[]
     } catch (error) {
       console.error("Error fetching processes:", error);
     } finally {
@@ -54,6 +55,8 @@ class ProcessStore {
     }
   }
   setFocusedProcess(processId: string) {
+    console.log("focused");
+
     try {
       this.isLoading = true;
 
@@ -66,6 +69,11 @@ class ProcessStore {
     } finally {
       this.isLoading = false;
     }
+  }
+  async userTasks(userEmail: string) {
+    try {
+      const tasks = await fetchUserTasks(userEmail);
+    } catch (error) {}
   }
   /**
    * Filters processes by a specific criterion (e.g., assignee or status).
