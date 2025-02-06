@@ -14,9 +14,7 @@ import {
 import { TaskSchema } from "@/app/interfaces/interfaces";
 export const ProcessTaskList = observer(
   ({ processTasks }: { processTasks: TaskSchema[] }) => {
-
     const { taskStore } = useRootStore();
-    console.log(taskStore.processTasks.length)
     return (
       <>
         {/* <Button onClick={fetchMyTasks}>fetch data</Button> */}
@@ -37,7 +35,6 @@ export const ProcessTaskList = observer(
             ))}
           </TableBody>
         </Table>
-
       </>
     );
   }

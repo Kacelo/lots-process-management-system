@@ -83,7 +83,6 @@ export async function addNewTask(taskData: TaskSchema) {
       taskIndex: taskData.taskIndex ?? null,
     });
     console.log("Task successfully created with ID:", docRef.id);
-    taskStore.processTasks.push({ id: newTaskId, ...newTask });
 
     return docRef.id;
   } catch (error) {

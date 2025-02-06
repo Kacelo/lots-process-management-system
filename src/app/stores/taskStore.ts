@@ -28,6 +28,20 @@ export class TaskStore {
       this.isLoading = false;
     }
   }
+  @action async fetchTasksByProcessId(processId: string) {
+    // safety first
+    try {
+      // fetch current tasks
+      const currentTasks = (await fetchTasks()) as TaskSchema[];
+      // set processTasks
+      console.log(currentTasks);
+      this.processTasks = [
+        ...currentTasks.filter((task) => task.processId === processId),
+      ];
+    } catch (error) {
+      console.error("Error loading tasks:", error);
+    }
+  }
 
   // Load all tasks from Firestore
   async loadTasks(processId: string) {
@@ -58,12 +72,28 @@ export class TaskStore {
       if (fetchedTasks.length === 0) {
         console.warn(`No tasks found for processId: ${processId}`);
       }
-      runInAction(() => {
-        this.processTasks = fetchedTasks;
-      });
+      return fetchedTasks;
     } catch (error) {
       console.error("Error loading tasks:", error);
     }
+  }
+  @action async getProcessTasks(processId: string) {
+    try {
+      const fetchedTasks = (await fetchDataById(
+        processId,
+        "tasks",
+        "processId"
+      )) as TaskSchema[];
+      if (fetchedTasks.length === 0) {
+        console.warn(`No tasks found for processId: ${processId}`);
+      }
+      console.log("tasks found:", fetchedTasks);
+      runInAction(() => {
+        if (fetchedTasks) {
+          this.processTasks = [...fetchedTasks];
+        }
+      });
+    } catch (error) {}
   }
   async fetchUserTask() {
     // this.isLoading = true;
@@ -88,12 +118,17 @@ export class TaskStore {
     }
   }
   // Add a new task
- @action async addNewTask(taskData: TaskSchema) {
+  @action async addNewTask(taskData: TaskSchema) {
     try {
       const newTaskId = await addNewTask(taskData);
       const newTask: TaskSchema = { ...taskData, id: newTaskId }; // Assume `id` is added to the task
+      const updatedTasks = await this.setProcessTasks(newTask.processId);
+      console.log("Updated:", updatedTasks);
       runInAction(() => {
         this.tasks.push(newTask); // Add the new task to the state
+        if (updatedTasks) {
+          this.processTasks = [...updatedTasks];
+        }
       });
       return newTask;
     } catch (error) {
