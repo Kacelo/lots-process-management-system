@@ -3,7 +3,6 @@ import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 import { firestore } from "../../../firebase";
 import {
   addNewTask,
-  fetchAllProcessTasks,
   fetchTasks,
   fetchUserTasks,
 } from "../api/taskAPI";

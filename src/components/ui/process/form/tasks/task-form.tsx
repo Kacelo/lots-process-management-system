@@ -90,6 +90,7 @@ export const TaskForm = observer(({ focusedProcess }: TaskFormSchema) => {
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
     setFocusedTask(values.taskname);
+    form.reset();
     // Handle form submission
   }
 
@@ -159,7 +160,6 @@ export const TaskForm = observer(({ focusedProcess }: TaskFormSchema) => {
 const TaskEditForm = observer(
   ({ focusedTask, focusedProcess }: TaskUpdateSchema) => {
     const { userStore, taskStore } = useRootStore();
-    const { addNewTask, tasks } = taskStore;
     const { toast } = useToast();
     const handleToast = (message: string, description: string) => {
       toast({
@@ -197,16 +197,6 @@ const TaskEditForm = observer(
     async function onSubmit(values: z.infer<typeof taskFormSchema>) {
       console.log("submitted values:", values);
       try {
-        // Show toast notification
-        // toast({
-        //   title: "You submitted the following values:",
-        //   description: (
-        //     <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-        //       <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        //     </pre>
-        //   ),
-        // });
-
         // Prepare process details
         const newTaskDetails = {
           ...defaultTaskDetails,
@@ -224,8 +214,6 @@ const TaskEditForm = observer(
       } catch (error) {
         console.error("Error while submitting form:", error);
       }
-      // set assigneeId, dueDate, description,status
-      // Timestamp.fromDate(new Date("2025-01-15T15:00:00Z"))
     }
 
     return (
