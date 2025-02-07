@@ -3,7 +3,6 @@ import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 import { firestore } from "../../../firebase";
 import {
   addNewTask,
-  fetchAllProcessTasks,
   fetchTasks,
   fetchUserTasks,
 } from "../api/taskAPI";
@@ -17,6 +16,7 @@ export class TaskStore {
   constructor() {
     makeAutoObservable(this);
   }
+  // get
   @action async fetchTasks() {
     this.isLoading = true;
     try {
@@ -28,6 +28,7 @@ export class TaskStore {
       this.isLoading = false;
     }
   }
+  // get
   @action async fetchTasksByProcessId(processId: string) {
     // safety first
     try {
@@ -42,7 +43,6 @@ export class TaskStore {
       console.error("Error loading tasks:", error);
     }
   }
-
   // Load all tasks from Firestore
   async loadTasks(processId: string) {
     // this.isLoading = true;
@@ -61,7 +61,7 @@ export class TaskStore {
       console.error("Error loading tasks:", error);
     }
   }
-  @action async setProcessTasks(processId: string) {
+  @action async updateTaskList(processId: string) {
     console.log("process ID:", processId);
     try {
       const fetchedTasks = (await fetchDataById(
@@ -72,7 +72,11 @@ export class TaskStore {
       if (fetchedTasks.length === 0) {
         console.warn(`No tasks found for processId: ${processId}`);
       }
-      return fetchedTasks;
+      runInAction(() => {
+        if (fetchedTasks) {
+          this.processTasks = [...fetchedTasks];
+        }
+      });
     } catch (error) {
       console.error("Error loading tasks:", error);
     }
@@ -122,14 +126,11 @@ export class TaskStore {
     try {
       const newTaskId = await addNewTask(taskData);
       const newTask: TaskSchema = { ...taskData, id: newTaskId }; // Assume `id` is added to the task
-      const updatedTasks = await this.setProcessTasks(newTask.processId);
-      console.log("Updated:", updatedTasks);
       runInAction(() => {
         this.tasks.push(newTask); // Add the new task to the state
-        if (updatedTasks) {
-          this.processTasks = [...updatedTasks];
-        }
       });
+      // update process list
+      await this.updateTaskList(newTask.processId);
       return newTask;
     } catch (error) {
       console.error("Error adding new task:", error);
