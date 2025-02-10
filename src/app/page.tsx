@@ -1,77 +1,216 @@
+import { CardBody, CardContainer, CardItem } from "@/components/global/3d-card";
+import { HeroParallax } from "@/components/global/connect-parallax";
+import { ContainerScroll } from "@/components/global/container-scroll-animation";
+import { InfiniteMovingCards } from "@/components/global/infinite-moving-cards";
+import { LampComponent } from "@/components/global/lamp";
+import Navbar from "@/components/global/navbar";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { clients, products } from "@/lib/constants";
+import { CheckIcon } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-    {/* Hero Section */}
-    <header className="text-center bg-gradient-to-b from-blue-500 to-blue-400 text-white py-16 px-8 rounded-lg shadow-lg">
-      <h1 className="text-4xl font-bold mb-4">Welcome</h1>
-      <p className="text-lg max-w-2xl mx-auto">
-        A platform to manage your processes, tasks, and analytics efficiently. Join us and simplify your workflow today.
-      </p>
-      <div className="mt-8 flex justify-center gap-4">
-        <a
-          href="/login"
-          className="px-6 py-3 bg-white text-blue-500 font-medium rounded-full shadow-md hover:bg-gray-100 transition"
-        >
-          Get Started
-        </a>
-      </div>
-    </header>
-
-    {/* Features Section */}
-    <section className="py-16">
-      <h2 className="text-3xl font-bold text-center mb-8">Features</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {/* Feature Card 1 */}
-        <div className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
-          {/* <div className="flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 mb-4 mx-auto">
-            <Image
-              src="/icons/users.svg"
-              alt="Users Icon"
-              width={32}
-              height={32}
-              className="dark:invert"
-            />
-          </div> */}
-          <h3 className="text-xl font-bold text-center mb-2 text-gray-600">Manage Users</h3>
-          <p className="text-center text-gray-600">
-            Easily manage user accounts, roles, and permissions from a centralized dashboard.
-          </p>
+    <main className="">
+      {/* Hero Section */}
+      {/* Features Section */}
+      <Navbar />
+      <section className="h-screen w-full  bg-neutral-950 rounded-md  !overflow-visible relative flex flex-col items-center  antialiased">
+        <div className="absolute inset-0  h-full w-full items-center px-5 py-24 [background:radial-gradient(125%_125%_at_50%_10%,#000_35%,#223_100%)]"></div>
+        <div className="flex flex-col mt-[-100px] md:mt-[-50px]">
+          <ContainerScroll
+            titleComponent={
+              <div className="flex items-center flex-col">
+                <Button
+                  size={"lg"}
+                  className="p-8 mb-8 md:mb-0 text-2xl w-full sm:w-fit border-t-2 rounded-full border-[#4D4D4D] bg-[#1F1F1F] hover:bg-white group transition-all flex items-center justify-center gap-4 hover:shadow-xl hover:shadow-neutral-500 duration-500"
+                >
+                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-neutral-500 to-neutral-600  md:text-center font-sans group-hover:bg-gradient-to-r group-hover:from-black goup-hover:to-black">
+                    Start For Free Today
+                  </span>
+                </Button>
+                <h1 className="text-5xl md:text-8xl  bg-clip-text text-transparent bg-gradient-to-b from-white to-neutral-600 font-sans font-bold">
+                  Automate Your Work With Automate Pro
+                </h1>
+              </div>
+            }
+          />
         </div>
-        {/* Feature Card 2 */}
-        <div className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
-          {/* <div className="flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 mb-4 mx-auto">
-            <Image
-              src="/icons/tasks.svg"
-              alt="Tasks Icon"
-              width={32}
-              height={32}
-              className="dark:invert"
-            />
-          </div> */}
-          <h3 className="text-xl font-bold text-center mb-2 text-gray-600">Streamline Processes</h3>
-          <p className="text-center text-gray-600">
-            Track, manage, and update processes with ease. Collaborate effectively with your team.
-          </p>
+      </section>
+      <InfiniteMovingCards
+        className="md:mt-[18rem] mt--[100px]"
+        items={clients}
+        direction="right"
+        speed="slow"
+      />
+      <section>
+        <HeroParallax products={products} />
+      </section>
+      <section>
+        <LampComponent />
+        <div className="flex flexx-wrap items-center justify-center flex-col md:flex-row gap-8 -mt-72">
+          <CardContainer>
+            <CardBody className="bg-greay-50 relative group/card dark:hover:shadow-2xl dark:hover:shadow-neutral-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-full md:!w-[350px] h-auto rounded-xl p-6 border">
+              <CardItem
+                translateZ={"50"}
+                className="text-xl font-bold text-neutral-600 dark:text-white"
+              >
+                Starter
+                <h2 className="text-6xl">N$ 199/m</h2>
+              </CardItem>
+              <CardItem
+                translateZ={"50"}
+                className="text-neutral-500 text-sm max-w-sm mt-2 dark:text-neutral-300"
+              >
+                Get a glimplse of what our software is capable of. Just a heads
+                up, {"you'll"} never leave us after this!
+              </CardItem>
+              <CardItem
+                translateZ={"50"}
+                className="text-neutral-500 text-sm max-w-sm mt-2 dark:text-neutral-300"
+              >
+                <ul className="my-4 flex flex-col gap-2">
+                  <li className="flex items-center gap-2">
+                    <CheckIcon />
+                    10 Automations
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckIcon />
+                    10 Team Members
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckIcon />
+                    100 Tasks
+                  </li>
+                </ul>
+              </CardItem>
+              <div className="flex justify-between items-center mty-8">
+                <CardItem
+                  translateZ={20}
+                  as="button"
+                  className="px-4 py-2 rounded-xl text-xs font-normal dark:text-white"
+                >
+                  Try now
+                </CardItem>
+                <CardItem
+                  translateZ={20}
+                  as="button"
+                  className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs font-bold"
+                >
+                  Get Started Now
+                </CardItem>
+              </div>
+            </CardBody>
+          </CardContainer>
+          <CardContainer>
+            <CardBody className="bg-greay-50 relative group/card dark:hover:shadow-2xl dark:hover:shadow-neutral-500/[0.1] dark:bg-black dark:border-[#E2CBFF] border-black/[0.1] w-full md:!w-[350px] h-auto rounded-xl p-6 border">
+              <CardItem
+                translateZ={"50"}
+                className="text-xl font-bold text-neutral-600 dark:text-white"
+              >
+                Pro Plan
+                <h2 className="text-6xl">N$ 499/m</h2>
+              </CardItem>
+              <CardItem
+                translateZ={"50"}
+                className="text-neutral-500 text-sm max-w-sm mt-2 dark:text-neutral-300"
+              >
+                Get a glimplse of what our software is capable of. Just a heads
+                up, {"you'll"} never leave us after this!
+              </CardItem>
+              <CardItem
+                translateZ={"50"}
+                className="text-neutral-500 text-sm max-w-sm mt-2 dark:text-neutral-300"
+              >
+                <ul className="my-4 flex flex-col gap-2">
+                  <li className="flex items-center gap-2">
+                    <CheckIcon />
+                    100 Automations
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckIcon />
+                    50 Team Members
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckIcon />
+                    100 Tasks per automation{" "}
+                  </li>
+                </ul>
+              </CardItem>
+              <div className="flex justify-between items-center mty-8">
+                <CardItem
+                  translateZ={20}
+                  as="button"
+                  className="px-4 py-2 rounded-xl text-xs font-normal dark:text-white"
+                >
+                  Try now
+                </CardItem>
+                <CardItem
+                  translateZ={20}
+                  as="button"
+                  className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs font-bold"
+                >
+                  Get Started Now
+                </CardItem>
+              </div>
+            </CardBody>
+          </CardContainer>
+          <CardContainer>
+            <CardBody className="bg-greay-50 relative group/card dark:hover:shadow-2xl dark:hover:shadow-neutral-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-full md:!w-[350px] h-auto rounded-xl p-6 border">
+              <CardItem
+                translateZ={"50"}
+                className="text-xl font-bold text-neutral-600 dark:text-white"
+              >
+                Enterprise
+                <h2 className="text-6xl font-bold">N$ 999/m</h2>
+              </CardItem>
+              <CardItem
+                translateZ={"50"}
+                className="text-neutral-500 text-sm max-w-sm mt-2 dark:text-neutral-300"
+              >
+                Get a glimplse of what our software is capable of. Just a heads
+                up, {"you'll"} never leave us after this!
+              </CardItem>
+              <CardItem
+                translateZ={"50"}
+                className="text-neutral-500 text-sm max-w-sm mt-2 dark:text-neutral-300"
+              >
+                <ul className="my-4 flex flex-col gap-2">
+                  <li className="flex items-center gap-2">
+                    <CheckIcon />
+                    Unlimited Automations
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckIcon />
+                    Unlimited Team Members
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckIcon />
+                    Unlimited Tasks
+                  </li>
+                </ul>
+              </CardItem>
+              <div className="flex justify-between items-center mty-8">
+                <CardItem
+                  translateZ={20}
+                  as="button"
+                  className="px-4 py-2 rounded-xl text-xs font-normal dark:text-white"
+                >
+                  Try now
+                </CardItem>
+                <CardItem
+                  translateZ={20}
+                  as="button"
+                  className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs font-bold"
+                >
+                  Get Started Now
+                </CardItem>
+              </div>
+            </CardBody>
+          </CardContainer>
+          {/* <Card></Card> */}
         </div>
-        {/* Feature Card 3 */}
-        <div className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
-          {/* <div className="flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 mb-4 mx-auto">
-            <Image
-              src="/icons/analytics.svg"
-              alt="Analytics Icon"
-              width={32}
-              height={32}
-              className="dark:invert"
-            />
-          </div> */}
-          <h3 className="text-xl font-bold text-center mb-2 text-gray-600">Advanced Analytics</h3>
-          <p className="text-center text-gray-600">
-            Gain insights into your data with detailed analytics to make informed decisions.
-          </p>
-        </div>
-      </div>
-    </section>
-  </div>   
+      </section>
+    </main>
   );
 }
