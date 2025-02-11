@@ -30,6 +30,7 @@ import { NavMain } from "./nav-main";
 import { NavProjects } from "./nav-projects";
 import { toJS } from "mobx";
 import { ModeToggle } from "../mode-toggle";
+import Image from "next/image";
 // import { toJS } from 'mobx';
 
 // This is sample data.
@@ -195,7 +196,8 @@ export const AppSidebar = observer(
         <div>
           <Sidebar collapsible="icon" {...props}>
             <SidebarHeader>
-              <h1>AutomatePro</h1>
+              {/* <h1>AutomatePro</h1> */}
+             
             </SidebarHeader>
             <SidebarContent>
               <NavMain items={navItems} />
