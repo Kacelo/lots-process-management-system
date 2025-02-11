@@ -14,6 +14,7 @@ import { SkeletonCard } from "@/components/ui/skeleton/skeleton";
 const page = observer(() => {
   const { authStore } = useRootStore();
   const { isLoading } = authStore;
+  
   if (isLoading) {
     return <SkeletonCard />;
   }else{

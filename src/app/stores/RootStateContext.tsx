@@ -2,20 +2,35 @@
 import React from "react";
 import AuthStore from "./userStore";
 import ProcessStore from "./processStore";
-
+import SessionStore from "./sessionStore";
+import UserStore from "./usersStore";
+import { TaskStore } from "./taskStore";
 type RootStateContextValue = {
   authStore: AuthStore;
-  processStore:ProcessStore;
+  processStore: ProcessStore;
+  sessionStore: SessionStore;
+  userStore: UserStore;
+  taskStore: TaskStore;
 };
 
-const RootStateContext = React.createContext<RootStateContextValue | undefined>(undefined);
+const RootStateContext = React.createContext<RootStateContextValue | undefined>(
+  undefined
+);
 
 const authStore = new AuthStore();
 const processStore = new ProcessStore();
+const sessionStore = new SessionStore();
+const userStore = new UserStore();
+const taskStore = new TaskStore();
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export const RootStateProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
-  const contextValue = React.useMemo(() => ({ authStore, processStore }), [authStore]);
+export const RootStateProvider: React.FC<React.PropsWithChildren<{}>> = ({
+  children,
+}) => {
+  const contextValue = React.useMemo(
+    () => ({ authStore, processStore, sessionStore, userStore, taskStore }),
+    [authStore]
+  );
 
   return (
     <RootStateContext.Provider value={contextValue}>

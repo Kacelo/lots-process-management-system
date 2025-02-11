@@ -9,18 +9,9 @@ import { useRootStore } from "@/app/stores/RootStateContext";
 
 export const NavBar = observer(() => {
   const { authStore, processStore } = useRootStore();
-  const { user } = authStore;
+  const { user, fetchUserData } = authStore;
   // const {fetchAllProcesses} = processStore;
-  // console.log("processes:",    processStore.fetchAllProcesses());
-  useEffect(() => {
-    // Fetch all processes when the component mounts
-    fetchData();
-  }, [processStore]);
-  async function fetchData() {
-    // You can await here
-    // console.log("processes:", await fetchAllProcesses())
-    // ...
-  }
+  // fetchUserData()
   return (
     <div className="fixed top-12 left-0 w-full flex items-center justify-center">
       <div className="flex items-center py-1 px-2">

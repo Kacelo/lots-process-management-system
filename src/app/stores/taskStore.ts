@@ -1,56 +1,142 @@
-import { makeAutoObservable, runInAction, reaction } from "mobx";
+import { makeAutoObservable, runInAction, reaction, action } from "mobx";
 import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 import { firestore } from "../../../firebase";
-
+import {
+  addNewTask,
+  fetchTasks,
+  fetchUserTasks,
+} from "../api/taskAPI";
+import { TaskSchema } from "../interfaces/interfaces";
+import { fetchDataById } from "../api/helper-functions/fetch-data";
 export class TaskStore {
-  tasks: Task[] = []; // Explicitly define the type of the array
-  isLoading = true;
-
+  tasks: TaskSchema[] = []; // Task state
+  isLoading = false;
+  userTasks: any;
+  processTasks: TaskSchema[] = [];
   constructor() {
     makeAutoObservable(this);
-    // this.loadTasks();
   }
-
-  // Load all tasks from Firestore
-  async loadTasks(processId: string) {
+  // get
+  @action async fetchTasks() {
     this.isLoading = true;
     try {
-      const taskCollection = collection(firestore, `processes/${processId}/tasks`);
-      const snapshot = await getDocs(taskCollection);
+      const fetchedTasks = await fetchTasks();
+      this.tasks = fetchedTasks as TaskSchema[];
+    } catch (error) {
+      console.error("Error fetching processes:", error);
+    } finally {
+      this.isLoading = false;
+    }
+  }
+  // get
+  @action async fetchTasksByProcessId(processId: string) {
+    // safety first
+    try {
+      // fetch current tasks
+      const currentTasks = (await fetchTasks()) as TaskSchema[];
+      // set processTasks
+      console.log(currentTasks);
+      this.processTasks = [
+        ...currentTasks.filter((task) => task.processId === processId),
+      ];
+    } catch (error) {
+      console.error("Error loading tasks:", error);
+    }
+  }
+  // Load all tasks from Firestore
+  async loadTasks(processId: string) {
+    // this.isLoading = true;
+    try {
+      const taskCollection = (await fetchDataById(
+        processId,
+        "tasks",
+        "processId"
+      )) as TaskSchema[];
+      console.log("taskCollection:", taskCollection);
       runInAction(() => {
-        this.tasks = snapshot.docs.map((doc) => new Task(this, doc.id, doc.data()));
+        this.tasks = taskCollection; // Update the tasks state
         this.isLoading = false;
       });
     } catch (error) {
       console.error("Error loading tasks:", error);
-      runInAction(() => {
-        this.isLoading = false;
-      });
     }
   }
-
-  // Add a new task
-  async addTask(processId: string, taskData: Partial<Task>) {
-    const newTask = new Task(this);
-    newTask.updateFromJson(taskData);
-    runInAction(() => {
-      this.tasks.push(newTask); // Ensure the array accepts Task objects
-    });
-    await newTask.save(processId);
-    return newTask;
+  @action async updateTaskList(processId: string) {
+    console.log("process ID:", processId);
+    try {
+      const fetchedTasks = (await fetchDataById(
+        processId,
+        "tasks",
+        "processId"
+      )) as TaskSchema[];
+      if (fetchedTasks.length === 0) {
+        console.warn(`No tasks found for processId: ${processId}`);
+      }
+      runInAction(() => {
+        if (fetchedTasks) {
+          this.processTasks = [...fetchedTasks];
+        }
+      });
+    } catch (error) {
+      console.error("Error loading tasks:", error);
+    }
   }
-
-  // Remove a task
-//   async removeTask(processId: string, task: Task) {
-//     try {
-//       await deleteDoc(doc(firestore, `processes/${processId}/tasks`, task.id));
-//       runInAction(() => {
-//         this.tasks = this.tasks.filter((t) => t.id !== task.id);
-//       });
-//     } catch (error) {
-//       console.error("Error removing task:", error);
-//     }
-//   }
+  @action async getProcessTasks(processId: string) {
+    try {
+      const fetchedTasks = (await fetchDataById(
+        processId,
+        "tasks",
+        "processId"
+      )) as TaskSchema[];
+      if (fetchedTasks.length === 0) {
+        console.warn(`No tasks found for processId: ${processId}`);
+      }
+      console.log("tasks found:", fetchedTasks);
+      runInAction(() => {
+        if (fetchedTasks) {
+          this.processTasks = [...fetchedTasks];
+        }
+      });
+    } catch (error) {}
+  }
+  async fetchUserTask() {
+    // this.isLoading = true;
+    try {
+      const fetchedTasks = await fetchUserTasks();
+      runInAction(() => {
+        if (this.userTasks) {
+          this.userTasks = fetchedTasks; // Update the tasks state
+          this.isLoading = false;
+        } else {
+          throw new Error("Loading state undefined");
+        }
+      });
+      // console.log(fetchedTasks, Hs1r6bSZojG9TOonX51X);
+    } catch (error) {
+      console.error("Error fetching user tasks:", error);
+      // runInAction(() => {
+      //   if (this.isLoading) {
+      //     this.isLoading = false;
+      //   }
+      // });
+    }
+  }
+  // Add a new task
+  @action async addNewTask(taskData: TaskSchema) {
+    try {
+      const newTaskId = await addNewTask(taskData);
+      const newTask: TaskSchema = { ...taskData, id: newTaskId }; // Assume `id` is added to the task
+      runInAction(() => {
+        this.tasks.push(newTask); // Add the new task to the state
+      });
+      // update process list
+      await this.updateTaskList(newTask.processId);
+      return newTask;
+    } catch (error) {
+      console.error("Error adding new task:", error);
+      throw error; // Re-throw to handle errors outside the store if needed
+    }
+  }
 }
 
 export class Task {
@@ -62,7 +148,11 @@ export class Task {
   autoSave = true;
   store: TaskStore;
 
-  constructor(store: TaskStore, id: string | null = null, initialData: Partial<Task> = {}) {
+  constructor(
+    store: TaskStore,
+    id: string | null = null,
+    initialData: Partial<Task> = {}
+  ) {
     makeAutoObservable(this);
     this.store = store;
     this.id = id;

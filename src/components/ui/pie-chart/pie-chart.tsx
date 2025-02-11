@@ -53,12 +53,8 @@ export function PieChartComponent({ chartData }: PieChartComponentProps) {
   }, [chartData])
 
   return (
-    <Card className="flex flex-col">
-      <CardHeader className="items-center pb-0">
-        <CardTitle></CardTitle>
-        <CardDescription></CardDescription>
-      </CardHeader>
-      <CardContent className="flex-1 pb-0">
+    <div className="flex flex-col">
+      <div className="flex-1 pb-0">
         <ChartContainer
           config={chartConfig}
           className="mx-auto aspect-square max-h-[250px]"
@@ -107,7 +103,7 @@ export function PieChartComponent({ chartData }: PieChartComponentProps) {
             </Pie>
           </PieChart>
         </ChartContainer>
-      </CardContent>
+      </div>
       <CardFooter className="flex-col gap-2 text-sm">
         <div className="flex items-center gap-2 font-medium leading-none">
          <TrendingUp className="h-4 w-4" />
@@ -116,6 +112,6 @@ export function PieChartComponent({ chartData }: PieChartComponentProps) {
           Showing total processes assigned to users
         </div>
       </CardFooter>
-    </Card>
+    </div>
   )
 }

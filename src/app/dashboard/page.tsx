@@ -2,16 +2,12 @@
 import React, { useEffect } from "react";
 import { useRootStore } from "@/app/stores/RootStateContext";
 import { observer } from "mobx-react-lite";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PieChartComponent } from "@/components/ui/pie-chart/pie-chart";
 import { SkeletonComp } from "@/components/ui/skeleton/skeleton";
+import RecentTasks from "@/components/dashboard-components/recent-tasks";
 const page = observer(() => {
-  const { authStore, processStore } = useRootStore();
+  const { authStore, processStore, sessionStore } = useRootStore();
   const { isLoading } = authStore;
   useEffect(() => {
     processStore.fetchProcesses();
@@ -26,10 +22,9 @@ const page = observer(() => {
   const notStartedTasks = processes.filter(
     (process) => process.status === "not-started"
   );
-  const rejected = processes.filter(
-    (process) => process.isApproved === true
-  );
+  const rejected = processes.filter((process) => process.isApproved === true);
 
+  console.log(sessionStore.currentUser);
   const chartData = [
     {
       browser: "completed",
@@ -57,8 +52,8 @@ const page = observer(() => {
   }
   return (
     <div>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6">
-        <Card>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-[20px]">
+        <Card className="h-[150px]">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Total Processes
@@ -74,7 +69,7 @@ const page = observer(() => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Completed Processe Tasks
+              Completed Process Tasks
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -86,27 +81,25 @@ const page = observer(() => {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Rejected</CardTitle>
+            <CardTitle className="text-sm font-medium">Not Started</CardTitle>
           </CardHeader>
           <CardContent>
-          <div className="text-2xl font-bold">{notStartedTasks.length}</div>
-          <p className="text-xs text-muted-foreground">
-            </p>
+            <div className="text-2xl font-bold">{notStartedTasks.length}</div>
+            <p className="text-xs text-muted-foreground"></p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Not Started</CardTitle>
+            <CardTitle className="text-sm font-medium">Rejected</CardTitle>
           </CardHeader>
           <CardContent>
-          <div className="text-2xl font-bold">{rejected.length}</div>
-          <p className="text-xs text-muted-foreground">
-            </p>
+            <div className="text-2xl font-bold">{rejected.length}</div>
+            <p className="text-xs text-muted-foreground"></p>
           </CardContent>
         </Card>
       </div>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6">
+        <Card className="col-span-3">
           <CardHeader>
             <CardTitle>Overview</CardTitle>
           </CardHeader>
@@ -114,7 +107,11 @@ const page = observer(() => {
             <PieChartComponent chartData={chartData} />
           </CardContent>
         </Card>
+        <div className="md:col-span-3 lg:col-span-3 col-span-3">
+           <RecentTasks />
+        </div>
       </div>
+      
     </div>
   );
 });

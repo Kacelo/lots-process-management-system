@@ -1,6 +1,11 @@
-import { makeAutoObservable } from "mobx";
+import { action, makeAutoObservable } from "mobx";
 import { User as FirebaseUser } from "firebase/auth";
-import { fetchUserData, initAuthListener, logOut } from "../api/authAPI";
+import {
+  fetchUserData,
+  initAuthListener,
+  logOut,
+  updateUserData,
+} from "../api/authAPI";
 
 class AuthStore {
   user: FirebaseUser | null = null;
@@ -9,22 +14,33 @@ class AuthStore {
 
   constructor() {
     makeAutoObservable(this);
-    this.initAuthListener();
+    // this.initAuthListener();
   }
-fetchUserData() {
-  if (this.user?.uid) { // Ensure that a user is logged in and has a UID
-    fetchUserData(this.user.uid)
-      .then((userData) => {
-        this.userData = userData; // Update the store with the fetched user data
-      })
-      .catch((error) => {
-        console.error("Error fetching user data:", error);
-      });
-  } else {
-    console.error("User UID is not available.");
+  @action fetchUserData() {
+    if (this.user?.uid) {
+      // Ensure that a user is logged in and has a UID
+      fetchUserData(this.user.uid)
+        .then((userData) => {
+          this.userData = userData; // Update the store with the fetched user data
+        })
+        .catch((error) => {
+          console.error("Error fetching user data:", error);
+        });
+    } else {
+      console.error("User UID is not available.");
+    }
   }
-}
-  initAuthListener() {
+  @action updateCurrentUserData() {
+    try {
+      // if (this.user) {
+        updateUserData()
+  
+      // }
+    } catch (error) {
+      console.log("an error occured:", error);
+    }
+  }
+  @action initAuthListener() {
     initAuthListener(
       (firebaseUser, userData) => {
         this.user = firebaseUser;
