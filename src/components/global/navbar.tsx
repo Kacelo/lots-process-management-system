@@ -15,11 +15,11 @@ const Navbar = observer(() => {
   return (
     <header className="fixed right-0 left-0 top-0 py-4 px-4 bg-black/40 backdrop-blur-lg z-[100] flex items-center border-b-[1px] border-neutral-900 justify-between">
       <aside className="flex items-center gap-[2px]">
-        <p>Automate Pro</p>
+        {/* <p className="font-bold text-3xl">Automate Pro</p> */}
         <Image
           src={"/1.png"}
-          width={15}
-          height={15}
+          width={100}
+          height={100}
           alt="automate logo"
           className="shadow-sm"
         ></Image>
