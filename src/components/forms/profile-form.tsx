@@ -15,9 +15,14 @@ import {
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
+import { useRootStore } from "@/app/stores/RootStateContext";
+import { observer } from "mobx-react-lite";
+import { updateUserData } from "@/app/api/authAPI";
 type Props = {};
 
-const ProfileForm = (props: Props) => {
+const ProfileForm = observer((props: Props) => {
+  const { authStore } = useRootStore();
+
   const form = useForm<z.infer<typeof EditUserProfileSchema>>({
     resolver: zodResolver(EditUserProfileSchema),
     defaultValues: {
@@ -25,8 +30,12 @@ const ProfileForm = (props: Props) => {
       email: "", // Default password
     },
   });
+  const handleProfileUpdate = () => {
+    authStore.updateCurrentUserData();
+  };
   async function onSubmit(values: z.infer<typeof EditUserProfileSchema>) {
     try {
+      authStore.updateCurrentUserData();
       console.log("Process added with ID:", values);
     } catch (error) {
       console.error("Error adding process:", error);
@@ -74,5 +83,5 @@ const ProfileForm = (props: Props) => {
       </Form>
     </div>
   );
-};
+});
 export default ProfileForm;

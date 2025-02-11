@@ -4,6 +4,7 @@ import {
   signOut,
   onAuthStateChanged,
   User as FirebaseUser,
+  updateProfile,
 } from "firebase/auth";
 
 // Function to fetch user data from Firestore
@@ -18,7 +19,10 @@ export async function fetchUserData(uid: string) {
     throw error;
   }
 }
-export function fetchUserDataRealtime(uid: string, callback: (data: Record<string, unknown> | null) => void) {
+export function fetchUserDataRealtime(
+  uid: string,
+  callback: (data: Record<string, unknown> | null) => void
+) {
   const userDoc = doc(firestore, "users", uid);
   return onSnapshot(
     userDoc,
@@ -80,7 +84,26 @@ export async function fetchCurrentUserData() {
     throw error;
   }
 }
-
+export async function updateUserData() {
+  try {
+    console.log("this function is actually running", auth.currentUser);
+    if (auth.currentUser) {
+      updateProfile(auth.currentUser, {
+        displayName: "Jane Q. Kacelo",
+        photoURL: "https://example.com/jane-q-user/profile.jpg",
+      })
+        .then(() => {
+          // Profile updated!
+          console.log("profile updated:");
+          // ...
+        })
+        .catch((error) => {
+          // An error occurred
+          // ...
+        });
+    }
+  } catch (error) {}
+}
 
 // "4qpp3UiXo8htB6Nyu0BELvPuX352"
 
