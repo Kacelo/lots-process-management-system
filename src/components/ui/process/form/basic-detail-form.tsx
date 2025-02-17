@@ -18,7 +18,6 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { addDoc, collection, getDocs } from "firebase/firestore";
 import { firestore } from "../../../../../firebase"; // Adjust path as needed
-import { useRootStore } from "@/app/stores/RootStateContext";
 import {
   Select,
   SelectContent,

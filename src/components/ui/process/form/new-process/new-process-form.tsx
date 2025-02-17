@@ -14,16 +14,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { Timestamp, addDoc, collection, getDocs } from "firebase/firestore";
-// import { firestore } from "../../../../../firebase"; // Adjust path as needed
+import { Timestamp} from "firebase/firestore";
 import { useRootStore } from "@/app/stores/RootStateContext";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui//select";
 import { toast } from "@/hooks/use-toast";
 import {
   Popover,
@@ -57,7 +49,6 @@ interface ProcessInterface {
 
 const NewProcess = ({ userId }: NewProcessProps) => {
   const { processStore } = useRootStore();
-  const [date, setDate] = React.useState<Date>();
   const [processId, setProcessId] = React.useState<any>();
   const pathname = usePathname();
   const router = useRouter();

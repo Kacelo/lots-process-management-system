@@ -1,8 +1,6 @@
-import { ProcessType } from "@/app/models/processes";
 import { useRootStore } from "@/app/stores/RootStateContext";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { TaskForm } from "../tasks/task-form";
-import { ProcessInterface } from "@/app/interfaces/interfaces";
 import { observer } from "mobx-react-lite";
 
 interface TaskProps {
