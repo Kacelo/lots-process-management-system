@@ -29,7 +29,7 @@ const RecentTasks = observer(() => {
   const { processStore } = useRootStore();
   useEffect(() => {
     processStore.fetchProcesses();
-  }, []);
+  }, [processStore]);
   const { processes, isLoading } = processStore;
 
   const completedTasks = processes.filter(

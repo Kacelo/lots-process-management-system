@@ -29,7 +29,7 @@ export const RootStateProvider: React.FC<React.PropsWithChildren<{}>> = ({
 }) => {
   const contextValue = React.useMemo(
     () => ({ authStore, processStore, sessionStore, userStore, taskStore }),
-    [authStore]
+    []
   );
 
   return (

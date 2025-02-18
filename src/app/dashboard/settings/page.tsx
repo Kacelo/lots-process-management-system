@@ -1,7 +1,9 @@
 import ProfileForm from "@/components/forms/profile-form";
 import React from "react";
 
-type Props = {};
+type Props = {
+  settings: string
+};
 
 const Settings = (props: Props) => {
   return (

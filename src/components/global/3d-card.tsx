@@ -119,9 +119,9 @@ export const CardItem = ({
 
   useEffect(() => {
     handleAnimations()
-  }, [isMouseEntered])
+  }, [isMouseEntered, handleAnimations])
 
-  const handleAnimations = () => {
+  function handleAnimations(){
     if (!ref.current) return
     if (isMouseEntered) {
       ref.current.style.transform = `translateX(${translateX}px) translateY(${translateY}px) translateZ(${translateZ}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg)`

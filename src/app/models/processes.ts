@@ -4,7 +4,7 @@ export type ProcessType = {
   createdAt?: string;
   createdBy?: string;
   description: string;
-  isReadyForScrutiny?: Boolean;
+  isReadyForScrutiny?: boolean;
   name: string;
   status: string;
   id: string;

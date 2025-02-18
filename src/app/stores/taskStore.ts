@@ -8,10 +8,13 @@ import {
 } from "../api/taskAPI";
 import { TaskSchema } from "../interfaces/interfaces";
 import { fetchDataById } from "../api/helper-functions/fetch-data";
+interface userTasks {
+    id: string;
+}
 export class TaskStore {
   tasks: TaskSchema[] = []; // Task state
   isLoading = false;
-  userTasks: any;
+  userTasks: userTasks[] = [];
   processTasks: TaskSchema[] = [];
   constructor() {
     makeAutoObservable(this);

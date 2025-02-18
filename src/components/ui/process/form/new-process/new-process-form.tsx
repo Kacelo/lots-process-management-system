@@ -49,7 +49,7 @@ interface ProcessInterface {
 
 const NewProcess = ({ userId }: NewProcessProps) => {
   const { processStore } = useRootStore();
-  const [processId, setProcessId] = React.useState<any>();
+  const [processId, setProcessId] = React.useState<string>();
   const pathname = usePathname();
   const router = useRouter();
 
@@ -112,7 +112,7 @@ const NewProcess = ({ userId }: NewProcessProps) => {
       });
     }
   }
-  const handleTaskAdd = (processId: any) => {
+  const handleTaskAdd = (processId: string) => {
     if (processId) {
       router.push(`/dashboard/new-tasks?processId=${processId}`);
     }
@@ -190,7 +190,7 @@ const NewProcess = ({ userId }: NewProcessProps) => {
                         mode="single"
                         selected={field.value}
                         onSelect={field.onChange}
-                        disabled={(date: any) => date < new Date()}
+                        disabled={(date) => date < new Date()}
                         initialFocus
                       />
                     </PopoverContent>

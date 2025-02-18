@@ -13,12 +13,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { useRootStore } from "@/app/stores/RootStateContext";
 import { observer } from "mobx-react-lite";
-import { updateUserData } from "@/app/api/authAPI";
-type Props = {};
+type Props = {
+  userName?: string
+};
 
 const ProfileForm = observer((props: Props) => {
   const { authStore } = useRootStore();

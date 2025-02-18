@@ -3,8 +3,6 @@ import { action, makeAutoObservable, observable, toJS } from "mobx";
 import { auth, firestore } from "../../../firebase";
 import {
   collection,
-  doc,
-  getDoc,
   getDocs,
   where,
   query,
@@ -12,10 +10,11 @@ import {
 import {
   logOut,
 } from "../api/authAPI";
+import { User } from "../models/users";
 
 class SessionStore {
   currentUser: FirebaseUser | null = null;
-  userData: any | null = null;
+  userData: User | null = null;
   errorMessage: string | null = null;
   isLoading = false;
   constructor() {

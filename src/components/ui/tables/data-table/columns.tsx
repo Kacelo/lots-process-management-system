@@ -6,9 +6,8 @@ import { TableActions, UserTableActions } from "./table-actions";
 import { User } from "@/app/models/users";
 import { Button } from "../../button";
 import { ArrowUpDown } from "lucide-react";
-import { ProcessInterface } from "@/app/interfaces/interfaces";
 
-export const processColumns: ColumnDef<any>[] = [
+export const processColumns: ColumnDef<ProcessType>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => {
