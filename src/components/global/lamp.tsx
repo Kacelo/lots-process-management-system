@@ -16,7 +16,7 @@ export function LampComponent() {
           duration: 0.8,
           ease: 'easeInOut',
         }}
-        className="mt-20 bg-gradient-to-br from-neutral-300 to-neutral-500 py-4 bg-clip-text text-center text-4xl font-medium tracking-tight text-transparent md:text-7xl"
+        className="mt-20 bg-gradient-to-br from-neutral-300 to-neutral-500 py-4 bg-clip-text text-center text-4xl font-bold tracking-tight text-transparent md:text-7xl"
       >
         Plans That
         <br /> Fit You Best
@@ -96,7 +96,7 @@ export const LampContainer = ({
           className="absolute inset-auto z-50 h-0.5 w-[30rem] -translate-y-[7rem] bg-neutral-400 "
         ></motion.div>
 
-        <div className="w-[40rem] h-40 relative">
+        {/* <div className="w-[40rem] h-40 relative">
           <SparklesCore
             background="transparent"
             minSize={0.4}
@@ -105,7 +105,7 @@ export const LampContainer = ({
             className="w-full h-full"
             particleColor="#FFFFFF"
           />
-        </div>
+        </div> */}
 
         <div className="absolute inset-auto z-40 h-44 w-full -translate-y-[12.5rem] bg-neutral-950 "></div>
       </div>
