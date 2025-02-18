@@ -10,8 +10,13 @@ import {
 import { observer } from "mobx-react-lite";
 import { useRootStore } from "@/app/stores/RootStateContext";
 import { ProcessType } from "@/app/models/processes";
+import { ProcessInterface } from "@/app/interfaces/interfaces";
+interface completedTasksProps {
+  assignee: string
+  name: string
+}
 
-function CompletedTaskCard(props: ProcessType) {
+function CompletedTaskCard(props: completedTasksProps) {
   const { assignee, name } = props;
   return (
     <div>
@@ -48,7 +53,7 @@ const RecentTasks = observer(() => {
           <CardContent className="grid gap-2">
             {completedTasks.map((task, index) => (
               <div key={index}>
-                <CompletedTaskCard {...task} />
+                <CompletedTaskCard assignee={""} {...task} />
               </div>
             ))}
           </CardContent>
