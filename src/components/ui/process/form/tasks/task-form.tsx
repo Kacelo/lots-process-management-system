@@ -287,7 +287,9 @@ const TaskEditForm = observer(
                   </FormItem>
                 )}
               />
-              <FormField
+            </div>
+            <div className="flex gap-3">
+            <FormField
                 control={form.control}
                 name="dueDate"
                 render={({ field }) => (
