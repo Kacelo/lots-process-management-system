@@ -27,7 +27,7 @@ import { useRootStore } from "@/app/stores/RootStateContext";
 // This is sample data.
 const data = {
   user: {
-    name: "shadcn",
+    username: "shadcn",
     email: "m@example.com",
     avatar: "",
   },
