@@ -318,14 +318,11 @@ const TaskEditForm = observer(
                           mode="single"
                           selected={field.value}
                           onSelect={field.onChange}
-                          disabled={(date: any) => date < new Date()}
+                          disabled={(date) => date < new Date()}
                           initialFocus
                         />
                       </PopoverContent>
                     </Popover>
-                    {/* <FormDescription>
-                Your date of birth is used to calculate your age.
-              </FormDescription> */}
                     <FormMessage />
                   </FormItem>
                 )}
