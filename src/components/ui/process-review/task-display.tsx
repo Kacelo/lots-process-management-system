@@ -1,6 +1,7 @@
 import { TaskSchema } from "@/app/interfaces/interfaces";
 import { Separator } from "../separator";
 import AssigneeAvatar from "./display-assignees";
+import { assignees } from "./mock-data";
 
 interface TaskDisplayProps {
   task: TaskSchema | null;
@@ -16,7 +17,12 @@ export function TaskDisplay({ task }: TaskDisplayProps) {
             <h3 className="font-bold text-3xl">{task.taskname}</h3>
           </div>
           <Separator />
-          <AssigneeAvatar assignees={} />
+          <div className="mb-[10px]"> 
+          <AssigneeAvatar assignees={assignees} />
+
+          </div>
+          <Separator />
+
           <div className="">
             <p>{task.description}</p>
           </div>
