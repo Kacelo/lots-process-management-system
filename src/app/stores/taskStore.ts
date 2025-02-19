@@ -101,7 +101,7 @@ export class TaskStore {
   }
   @action async setFocusedTask(taskId: string) {
     try {
-      const task = await fetchDataById(taskId, "tasks", "taskId") as TaskSchema[];
+      const task = this.processTasks.filter((task) => task.id === taskId);
       if (task.length === 0) {
         console.warn(`No tasks found for processId: ${taskId}`);
       }

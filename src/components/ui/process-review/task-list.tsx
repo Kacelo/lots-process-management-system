@@ -20,9 +20,12 @@ export function TaskList({ items }: TaskListProps) {
     if (taskId !== null) {
       const selected = items.filter((item) => item.id === taskId);
       setSelectedTask(selected[0]);
+      if(selected){
+        taskStore.setFocusedTask(selected[0].id as string);
+      }
     }
   };
-  console.log(items)
+  console.log(items);
   //   useEffect(() => {
   //     first;
 
@@ -33,7 +36,7 @@ export function TaskList({ items }: TaskListProps) {
 
   // const [task, setTask] = use
   return (
-    <ScrollArea className="h-screen">
+    <ScrollArea className="h-[30rem] w-108">
       <div className="flex flex-col gap-2 p-4 pt-0">
         {items.map((item) => (
           <button
@@ -60,7 +63,8 @@ export function TaskList({ items }: TaskListProps) {
                       : "text-muted-foreground"
                   )}
                 >
-                 Due: {formatDistanceToNow(new Date(item?.dueDate.seconds * 1000), {
+                  Due:{" "}
+                  {formatDistanceToNow(new Date(item?.dueDate.seconds * 1000), {
                     addSuffix: true,
                   })}
                 </div>

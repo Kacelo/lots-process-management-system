@@ -2,6 +2,7 @@
 import React, { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { ScrutinyForm } from "@/components/ui/process-review/process-review";
+import { TaskView } from "@/components/ui/process-review/process-view";
 
 function WithSuspense() {
   const searchParams = useSearchParams();
@@ -10,7 +11,7 @@ function WithSuspense() {
   return (
     <div className="flex min-h-svh w-full justify-center p-2 md:p-10">
       <div className="w-full">
-        <ScrutinyForm processId={processId as string} />
+        <TaskView focusedProcessId={processId as string} />
       </div>
     </div>
   );
