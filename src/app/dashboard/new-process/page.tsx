@@ -2,7 +2,7 @@
 import React from "react";
 import { useRootStore } from "@/app/stores/RootStateContext";
 import { observer } from "mobx-react-lite";
-import ProcessForm from "@/components/ui/process/form/process-form";
+import ProcessForm from "@/components/ui/process/forms/process-form";
 import { SkeletonCard } from "@/components/ui/skeleton/skeleton";
 
 const Page = observer(()=> {

@@ -1,21 +1,18 @@
 import { makeAutoObservable, runInAction, reaction, action } from "mobx";
 import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 import { firestore } from "../../../firebase";
-import {
-  addNewTask,
-  fetchTasks,
-  fetchUserTasks,
-} from "../api/taskAPI";
+import { addNewTask, fetchTasks, fetchUserTasks } from "../api/taskAPI";
 import { TaskSchema } from "../interfaces/interfaces";
 import { fetchDataById } from "../api/helper-functions/fetch-data";
 interface userTasks {
-    id: string;
+  id: string;
 }
 export class TaskStore {
   tasks: TaskSchema[] = []; // Task state
   isLoading = false;
   userTasks: userTasks[] = [];
   processTasks: TaskSchema[] = [];
+  focusedTask: TaskSchema[] = [];
   constructor() {
     makeAutoObservable(this);
   }
@@ -101,6 +98,22 @@ export class TaskStore {
         }
       });
     } catch (error) {}
+  }
+  @action async setFocusedTask(taskId: string) {
+    try {
+      const task = await fetchDataById(taskId, "tasks", "taskId") as TaskSchema[];
+      if (task.length === 0) {
+        console.warn(`No tasks found for processId: ${taskId}`);
+      }
+      console.log("tasks found:", task);
+      runInAction(() => {
+        if (task) {
+          this.focusedTask = [...task];
+        }
+      });
+    } catch (error) {
+      console.error("could not fetch task", error);
+    }
   }
   async fetchUserTask() {
     // this.isLoading = true;

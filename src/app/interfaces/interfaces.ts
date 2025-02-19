@@ -18,7 +18,7 @@ export interface ProcessInterface {
     status?: string;
     assigneeId?: string;
     createdBy?: string;
-    dueDate?: Timestamp;
+    dueDate: Timestamp;
     completedAt?: Timestamp; // Optional field
     isArchived?: boolean;
     taskIndex?: number;

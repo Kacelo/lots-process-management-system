@@ -40,6 +40,7 @@ import { Timestamp } from "firebase/firestore";
 import { ProcessInterface, TaskSchema } from "@/app/interfaces/interfaces";
 import { ProcessTaskList } from "./task-list";
 import { useToast } from "@/hooks/use-toast";
+import { TaskList } from "@/components/ui/process-review/task-list";
 const formSchema = z.object({
   taskname: z.string().min(2, {
     message: "Username must be at least 2 characters.",
@@ -109,7 +110,8 @@ export const TaskForm = observer(({ focusedProcess }: TaskFormSchema) => {
           <div className="w-full md:w-1/3 bg-muted/50 rounded-xl p-4">
             {/* Task List */}
             {taskStore.processTasks.length > 0 ? (
-              <ProcessTaskList processTasks={taskStore.processTasks} />
+              // <ProcessTaskList processTasks={taskStore.processTasks} />
+              <TaskList items ={taskStore.processTasks}/>
             ) : (
               <p>No tasks available.</p>
             )}
