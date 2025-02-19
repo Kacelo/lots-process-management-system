@@ -1,7 +1,7 @@
 "use client";
 import React, { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import ProcessTask from "@/components/ui/process/form/new-process/process-tasks";
+import ProcessTask from "@/components/ui/process/forms/new-process/process-tasks";
 function WithSuspense() {
   const searchParams = useSearchParams();
   const processId = searchParams.get("processId");
