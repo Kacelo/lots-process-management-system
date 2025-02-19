@@ -194,6 +194,8 @@ const TaskEditForm = observer(
       status: "not-started",
       processId: focusedProcess?.id as string,
       createdBy: focusedProcess?.createdBy,
+    
+      dueDate: Timestamp.fromDate(new Date()),
     };
     async function onSubmit(values: z.infer<typeof taskFormSchema>) {
       console.log("submitted values:", values);

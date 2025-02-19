@@ -2,6 +2,7 @@ import { TaskSchema } from "@/app/interfaces/interfaces";
 import { Separator } from "../separator";
 import AssigneeAvatar from "./display-assignees";
 import { assignees } from "./mock-data";
+import { Button } from "../button";
 
 interface TaskDisplayProps {
   task: TaskSchema | null;
@@ -27,8 +28,10 @@ export function TaskDisplay({ task }: TaskDisplayProps) {
             <p>{task.description}</p>
           </div>
           <Separator></Separator>
-          <div>
-
+          <div className="mt-[5px]">
+            <Button>
+              Update task
+            </Button>
           </div>
         </>
       ) : (
