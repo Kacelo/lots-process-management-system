@@ -38,6 +38,12 @@ export const TableActions = ({ processId }: ActionProps) => {
           onClick={() => handleEditClick(processId)}
           className="cursor: pointer"
         >
+          View Details
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => handleEditClick(processId)}
+          className="cursor: pointer"
+        >
           Update Task
         </DropdownMenuItem>
         <DropdownMenuItem
