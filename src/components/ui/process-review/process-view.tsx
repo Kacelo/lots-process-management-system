@@ -55,9 +55,14 @@ export const TaskView = observer(({ focusedProcessId }: ViewTaskSchema) => {
     <div>
       <div className="flex flex-col gap-4 p-4">
         {focusedProcessId ? (
-          <h1 className="text-4xl font-extrabold tracking-tight">
-            {focusedProcess?.name}
-          </h1>
+          <div>
+            <h1 className="text-4xl font-extrabold tracking-tight">
+              {focusedProcess?.name}
+            </h1>
+            <p className="text-xl tracking-tight">
+              {focusedProcess?.description}
+            </p>
+          </div>
         ) : (
           <p>No process found for the given ID.</p>
         )}
@@ -67,8 +72,6 @@ export const TaskView = observer(({ focusedProcessId }: ViewTaskSchema) => {
           <div className="w-full md:w-1/3 bg-muted/50 rounded-xl p-4">
             {/* Task List */}
             {taskStore.processTasks.length > 0 ? (
-              // <ProcessTaskList processTasks={taskStore.processTasks} />
-              // <TaskList items ={taskStore.processTasks}/>
               <>
                 <TaskList items={taskStore.processTasks} />
               </>

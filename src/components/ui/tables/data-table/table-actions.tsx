@@ -24,6 +24,9 @@ export const TableActions = ({ processId }: ActionProps) => {
     console.log("clicked", processId);
     router.push(`/dashboard/update-task?processId=${processId}`);
   };
+  const handleViewClick = (processId: string) => {
+    router.push(`/dashboard/view-process?processId=${processId}`);
+  };
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -35,7 +38,7 @@ export const TableActions = ({ processId }: ActionProps) => {
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuItem
-          onClick={() => handleEditClick(processId)}
+          onClick={() => handleViewClick(processId)}
           className="cursor: pointer"
         >
           View Details
@@ -44,13 +47,13 @@ export const TableActions = ({ processId }: ActionProps) => {
           onClick={() => handleEditClick(processId)}
           className="cursor: pointer"
         >
-          Update Task
+          Update
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => handleEditClick(processId)}
           className="cursor: pointer"
         >
-          Delete Task
+          Delete
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
