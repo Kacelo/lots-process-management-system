@@ -36,7 +36,7 @@ export function TaskDisplay({ task }: TaskDisplayProps) {
         </>
       ) : (
         <div className="p-8 text-center text-muted-foreground">
-          No message selected
+          No task selected
         </div>
       )}
     </div>
