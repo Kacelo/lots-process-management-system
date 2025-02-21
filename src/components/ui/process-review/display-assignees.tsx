@@ -17,8 +17,8 @@ function AssigneeAvatar({ assignees }: AssigneeAvaterProps) {
         <p className="mt-[10px] mr-[10px]">Assigned to:</p>
 
         </div>
-      {assignees.map((assignee) => (
-        <div className="cursor-pointer">
+      {assignees.map((assignee, index) => (
+        <div className="cursor-pointer" key={index}>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
